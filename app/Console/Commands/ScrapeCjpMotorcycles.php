@@ -108,7 +108,7 @@ class ScrapeCjpMotorcycles extends Command
             }
 
             $this->importMotorcycle($product);
-            DB::table('scrape_log')->insert(['url' => $product['detail_url']]);
+            DB::table('scrape_log')->insertOrIgnore(['url' => $product['detail_url']]);
             $bar->advance();
         }
 

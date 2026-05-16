@@ -78,7 +78,7 @@ class MotorcycleController extends Controller
     public function destroyVideo(Motorcycle $motorcycle): RedirectResponse
     {
         if ($motorcycle->video_path) {
-            \Storage::disk('public')->delete($motorcycle->video_path);
+            Storage::disk(MotorcycleImage::disk())->delete($motorcycle->video_path);
             $motorcycle->update(['video_path' => null]);
         }
 
@@ -139,11 +139,19 @@ class MotorcycleController extends Controller
 
         $request->validate(['video' => 'file|mimes:mp4,webm,mov|max:204800']);
 
+        $disk = MotorcycleImage::disk();
+
         if ($motorcycle->video_path) {
-            \Storage::disk('public')->delete($motorcycle->video_path);
+            Storage::disk($disk)->delete($motorcycle->video_path);
         }
 
-        $path = $request->file('video')->store("motorcycles/{$motorcycle->id}/video", 'public');
+        $content = $request->file('video')->get();
+        $ext = $request->file('video')->extension();
+        $path = "motorcycles/{$motorcycle->id}/video/" . Str::uuid() . ".{$ext}";
+        Storage::disk($disk)->put($path, $content, [
+            'visibility'  => 'public',
+            'ContentType' => $request->file('video')->getMimeType(),
+        ]);
         $motorcycle->update(['video_path' => $path]);
     }
 

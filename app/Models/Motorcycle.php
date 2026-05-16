@@ -65,7 +65,9 @@ class Motorcycle extends Model
 
     public function getVideoUrlAttribute(): ?string
     {
-        return $this->video_path ? asset('storage/' . $this->video_path) : null;
+        return $this->video_path
+            ? \Storage::disk(MotorcycleImage::disk())->url($this->video_path)
+            : null;
     }
 
     public function isInStock(): bool

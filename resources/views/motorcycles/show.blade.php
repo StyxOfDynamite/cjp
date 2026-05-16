@@ -79,7 +79,7 @@
                                 <button x-on:click="active = i"
                                         :class="active === i ? 'ring-amber-400 ring-2' : 'ring-white/10 ring-1 hover:ring-amber-400/50'"
                                         class="aspect-square overflow-hidden bg-zinc-900 focus:outline-none transition-all">
-                                    <img :src="img.url" :alt="img.alt" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
+                                    <img :src="img.url" :alt="img.alt" loading="lazy" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
                                 </button>
                             </template>
                         </div>

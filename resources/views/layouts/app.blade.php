@@ -17,28 +17,29 @@
     </script>
     @endif
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('head')
 </head>
 <body class="font-sans antialiased">
 
-<nav class="glass border-b border-white/10 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-        <a href="{{ route('motorcycles.index') }}" class="text-xl font-bold tracking-tight text-white">
+<nav class="glass-blur border-b border-white/10 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-18" style="height:4.5rem">
+        <a href="{{ route('motorcycles.index') }}" class="text-2xl font-extrabold tracking-tight text-white uppercase">
             {{ config('seo.business_name', config('app.name')) }}
         </a>
-        <div class="hidden sm:flex items-center gap-6 text-sm font-medium">
+        <div class="hidden sm:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide">
             <a href="{{ route('motorcycles.index') }}" class="{{ request()->routeIs('motorcycles.index') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">Motorcycles</a>
             <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">About</a>
             <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">Contact</a>
         </div>
-        <div class="flex items-center gap-4 text-sm">
+        <div class="flex items-center gap-4 text-sm font-semibold uppercase tracking-wide">
             @auth
-                <a href="{{ route('admin.motorcycles.index') }}" class="text-amber-400 hover:text-amber-300 font-medium transition-colors">Admin</a>
+                <a href="{{ route('admin.motorcycles.index') }}" class="text-amber-400 hover:text-amber-300 transition-colors">Admin</a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
-                    <button type="submit" class="text-zinc-500 hover:text-zinc-300 transition-colors">Logout</button>
+                    <button type="submit" class="text-zinc-400 hover:text-zinc-200 transition-colors">Logout</button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="text-zinc-400 hover:text-white transition-colors">Staff Login</a>
+                <a href="{{ route('login') }}" class="text-zinc-300 hover:text-white transition-colors">Staff Login</a>
             @endauth
         </div>
     </div>

@@ -83,10 +83,17 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                         @foreach($motorcycles as $bike)
                             @php $primary = $bike->images->first(); @endphp
+                            @if($loop->first && $primary)
+                                @push('head')
+                                    <link rel="preload" as="image" href="{{ $primary->url }}">
+                                @endpush
+                            @endif
                             <a href="{{ route('motorcycles.show', $bike) }}" class="group glass overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-200">
                                 <div class="aspect-video bg-zinc-900 overflow-hidden">
                                     @if($primary)
                                         <img src="{{ $primary->url }}" alt="{{ $primary->alt_text ?? $bike->year . ' ' . $bike->make . ' ' . $bike->model }}"
+                                             loading="{{ $loop->index < 3 ? 'eager' : 'lazy' }}"
+                                             fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-zinc-700">

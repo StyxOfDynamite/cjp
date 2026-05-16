@@ -6,11 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Jobs\GenerateThumbnail;
 use App\Models\MotorcycleImage;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class ThumbnailController extends Controller
 {
     public function show(MotorcycleImage $image): RedirectResponse
     {
+        if ($image->has_thumbnail) {
+            $thumb = preg_replace('/\.webp$/', '_thumb.webp', $image->path);
+            return redirect(Storage::disk(MotorcycleImage::disk())->url($thumb), 301);
+        }
+
         GenerateThumbnail::dispatch($image);
 
         return redirect($image->url, 302);

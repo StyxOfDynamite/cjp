@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Storage;
 
 class MotorcycleImage extends Model
 {
-    protected $fillable = ['motorcycle_id', 'path', 'alt_text', 'sort_order', 'is_primary'];
+    protected $fillable = ['motorcycle_id', 'path', 'alt_text', 'sort_order', 'is_primary', 'has_thumbnail'];
 
     protected $casts = [
-        'is_primary' => 'boolean',
-        'sort_order' => 'integer',
+        'is_primary'     => 'boolean',
+        'has_thumbnail'  => 'boolean',
+        'sort_order'     => 'integer',
     ];
 
     public function motorcycle(): BelongsTo

@@ -398,10 +398,11 @@ class ScrapeCjpMotorcycles extends Command
 
                 MotorcycleImage::create([
                     'motorcycle_id' => $motorcycle->id,
-                    'path' => $path,
-                    'alt_text' => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
-                    'sort_order' => $i,
-                    'is_primary' => $i === 0,
+                    'path'          => $path,
+                    'alt_text'      => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
+                    'sort_order'    => $i,
+                    'is_primary'    => $i === 0,
+                    'has_thumbnail' => true,
                 ]);
             } catch (\Exception) {
                 // Skip images that fail

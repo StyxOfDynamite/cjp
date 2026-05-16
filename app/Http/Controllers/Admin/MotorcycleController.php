@@ -125,10 +125,11 @@ class MotorcycleController extends Controller
             Storage::disk($disk)->put($path,  (string) $manager->decodeBinary($content)->encode(new WebpEncoder(85)), $options);
             Storage::disk($disk)->put($thumb, (string) $manager->decodeBinary($content)->scaleDown(width: 600)->encode(new WebpEncoder(80)), $options);
             $motorcycle->images()->create([
-                'path'       => $path,
-                'alt_text'   => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
-                'sort_order' => $motorcycle->images()->count() + $i,
-                'is_primary' => $isFirst && $i === 0,
+                'path'          => $path,
+                'alt_text'      => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
+                'sort_order'    => $motorcycle->images()->count() + $i,
+                'is_primary'    => $isFirst && $i === 0,
+                'has_thumbnail' => true,
             ]);
         }
     }

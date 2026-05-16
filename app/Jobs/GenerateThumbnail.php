@@ -22,12 +22,12 @@ class GenerateThumbnail implements ShouldQueue
 
     public function handle(): void
     {
-        $disk  = MotorcycleImage::disk();
-        $thumb = preg_replace('/\.webp$/', '_thumb.webp', $this->image->path);
-
-        if (Storage::disk($disk)->exists($thumb)) {
+        if ($this->image->has_thumbnail) {
             return;
         }
+
+        $disk  = MotorcycleImage::disk();
+        $thumb = preg_replace('/\.webp$/', '_thumb.webp', $this->image->path);
 
         try {
             $content = Storage::disk($disk)->get($this->image->path);
@@ -42,6 +42,8 @@ class GenerateThumbnail implements ShouldQueue
                 'ContentType'  => 'image/webp',
                 'CacheControl' => 'max-age=31536000, immutable',
             ]);
+
+            $this->image->update(['has_thumbnail' => true]);
         } catch (\Throwable $e) {
             Log::warning("Thumbnail generation failed for image {$this->image->id}: {$e->getMessage()}");
         }

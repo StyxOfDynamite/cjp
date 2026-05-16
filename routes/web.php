@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\MotorcycleController as AdminMotorcycleController;
 use App\Http\Controllers\Admin\StockController;
+use App\Http\Controllers\Admin\ThumbnailController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicMotorcycleController;
@@ -59,6 +60,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('/motorcycles/{motorcycle}/video', [AdminMotorcycleController::class, 'destroyVideo'])->name('motorcycles.video.destroy');
 
     Route::patch('/motorcycles/{motorcycle}/stock', [StockController::class, 'update'])->name('motorcycles.stock');
+
+    Route::get('/image/{image}/thumb', [ThumbnailController::class, 'show'])->name('image.thumbnail');
 });
 
 require __DIR__.'/auth.php';

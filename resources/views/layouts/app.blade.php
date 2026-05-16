@@ -19,20 +19,43 @@
 </head>
 <body class="font-sans antialiased">
 
-<nav class="bg-zinc-950 border-b border-white/10 sticky top-0 z-40">
+{{-- Skip to main content (accessibility + crawlers) --}}
+<a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-amber-500 focus:text-black focus:px-4 focus:py-2 focus:text-sm focus:font-semibold">
+    Skip to main content
+</a>
+
+<nav aria-label="Main navigation" class="bg-zinc-950 border-b border-white/10 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-18" style="height:4.5rem">
-        <a href="{{ route('home') }}" class="text-2xl font-extrabold tracking-tight text-white uppercase">
+        <a href="{{ route('home') }}" class="text-2xl font-extrabold tracking-tight text-white uppercase" aria-label="{{ config('seo.business_name') }} — Home">
             {{ config('seo.business_name', config('app.name')) }}
         </a>
-        <div class="hidden sm:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide">
-            <a href="{{ route('motorcycles.index') }}" class="{{ request()->routeIs('motorcycles.*') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">Motorcycles</a>
-            <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">About</a>
-            <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">Contact</a>
-        </div>
+        <ul class="hidden sm:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide list-none" role="list">
+            <li>
+                <a href="{{ route('motorcycles.index') }}"
+                   class="{{ request()->routeIs('motorcycles.*') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors"
+                   @if(request()->routeIs('motorcycles.*')) aria-current="page" @endif>
+                    Motorcycles
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('about') }}"
+                   class="{{ request()->routeIs('about') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors"
+                   @if(request()->routeIs('about')) aria-current="page" @endif>
+                    About
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('contact') }}"
+                   class="{{ request()->routeIs('contact') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors"
+                   @if(request()->routeIs('contact')) aria-current="page" @endif>
+                    Contact
+                </a>
+            </li>
+        </ul>
         <div class="flex items-center gap-4 text-sm font-semibold uppercase tracking-wide">
             @auth
                 <a href="{{ route('admin.motorcycles.index') }}" class="text-amber-400 hover:text-amber-300 transition-colors">Admin</a>
-                <form method="POST" action="{{ route('logout') }}" class="inline">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="text-zinc-400 hover:text-zinc-200 transition-colors">Logout</button>
                 </form>
@@ -43,11 +66,11 @@
     </div>
 </nav>
 
-<main>
+<main id="main-content">
     {{ $slot }}
 </main>
 
-<footer class="bg-zinc-950 border-t border-white/10 text-zinc-300 mt-16">
+<footer aria-label="Site footer" class="bg-zinc-950 border-t border-white/10 text-zinc-300 mt-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
             <h3 class="text-white font-semibold mb-2 tracking-tight">{{ config('seo.business_name') }}</h3>
@@ -65,16 +88,15 @@
                 @endforeach
             </ul>
         </div>
-        <div>
+        <nav aria-label="Footer navigation">
             <h3 class="text-white font-semibold mb-2 tracking-tight">Quick Links</h3>
             <ul class="text-sm space-y-1">
                 <li><a href="{{ route('motorcycles.index') }}" class="hover:text-white transition-colors">Browse Motorcycles</a></li>
-                <li><a href="{{ route('home') }}" class="hover:text-white transition-colors">Home</a></li>
                 <li><a href="{{ route('about') }}" class="hover:text-white transition-colors">About Us</a></li>
                 <li><a href="{{ route('contact') }}" class="hover:text-white transition-colors">Contact</a></li>
                 <li><a href="{{ route('sitemap') }}" class="hover:text-white transition-colors">Sitemap</a></li>
             </ul>
-        </div>
+        </nav>
     </div>
     <div class="border-t border-white/5 text-center text-xs text-zinc-600 py-4">
         &copy; {{ date('Y') }} {{ config('seo.business_name') }}. All rights reserved.

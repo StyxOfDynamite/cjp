@@ -94,7 +94,7 @@
                                  x-transition:leave="transition ease-in duration-75"
                                  x-transition:leave-start="opacity-100 scale-100"
                                  x-transition:leave-end="opacity-0 scale-95"
-                                 class="absolute right-0 top-9 w-36 glass-light z-10 py-1"
+                                 class="absolute right-0 top-9 w-36 bg-zinc-800 border border-white/10 z-10 py-1"
                                  style="display:none">
                                 <a href="{{ route('motorcycles.show', $bike) }}" target="_blank"
                                    class="flex items-center gap-2 px-4 py-2 text-sm text-zinc-300 hover:text-white hover:bg-white/10 transition-colors">

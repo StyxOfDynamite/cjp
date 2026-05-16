@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\ImageManager;
 
 class ScrapeCjpMotorcycles extends Command
@@ -318,7 +319,7 @@ class ScrapeCjpMotorcycles extends Command
 
     private function downloadImages(Motorcycle $motorcycle, array $urls): void
     {
-        $manager = ImageManager::gd();
+        $manager = new ImageManager(new GdDriver());
 
         foreach (array_slice($urls, 0, 10) as $i => $url) {
             try {

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\ImageManager;
 
 class MotorcycleController extends Controller
@@ -111,7 +112,7 @@ class MotorcycleController extends Controller
 
         $disk = MotorcycleImage::disk();
         $isFirst = $motorcycle->images()->count() === 0;
-        $manager = ImageManager::gd();
+        $manager = new ImageManager(new GdDriver());
 
         foreach ($request->file('images') as $i => $file) {
             $webp = $manager->read($file->getContent())->toWebp(quality: 85);

@@ -7,7 +7,10 @@ use App\Models\Motorcycle;
 use App\Models\MotorcycleImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Intervention\Image\ImageManager;
 
 class MotorcycleController extends Controller
 {
@@ -58,11 +61,12 @@ class MotorcycleController extends Controller
 
     public function destroy(Motorcycle $motorcycle): RedirectResponse
     {
+        $disk = MotorcycleImage::disk();
         foreach ($motorcycle->images as $image) {
-            \Storage::disk('public')->delete($image->path);
+            Storage::disk($disk)->delete($image->path);
         }
         if ($motorcycle->video_path) {
-            \Storage::disk('public')->delete($motorcycle->video_path);
+            Storage::disk($disk)->delete($motorcycle->video_path);
         }
         $motorcycle->delete();
 
@@ -105,10 +109,17 @@ class MotorcycleController extends Controller
 
         $request->validate(['images.*' => 'image|max:5120']);
 
+        $disk = MotorcycleImage::disk();
         $isFirst = $motorcycle->images()->count() === 0;
+        $manager = ImageManager::gd();
 
         foreach ($request->file('images') as $i => $file) {
-            $path = $file->store("motorcycles/{$motorcycle->id}", 'public');
+            $webp = $manager->read($file->getContent())->toWebp(quality: 85);
+            $path = "motorcycles/{$motorcycle->id}/" . Str::uuid() . ".webp";
+            Storage::disk($disk)->put($path, (string) $webp, [
+                'visibility'  => 'public',
+                'ContentType' => 'image/webp',
+            ]);
             $motorcycle->images()->create([
                 'path'       => $path,
                 'alt_text'   => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
@@ -136,7 +147,7 @@ class MotorcycleController extends Controller
 
     public function destroyImage(MotorcycleImage $image): RedirectResponse
     {
-        \Storage::disk('public')->delete($image->path);
+        Storage::disk(MotorcycleImage::disk())->delete($image->path);
 
         $wasPrimary = $image->is_primary;
         $motorcycleId = $image->motorcycle_id;

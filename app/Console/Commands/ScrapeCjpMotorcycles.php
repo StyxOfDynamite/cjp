@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
 
 class ScrapeCjpMotorcycles extends Command
 {
@@ -317,18 +318,19 @@ class ScrapeCjpMotorcycles extends Command
 
     private function downloadImages(Motorcycle $motorcycle, array $urls): void
     {
+        $manager = ImageManager::gd();
+
         foreach (array_slice($urls, 0, 10) as $i => $url) {
             try {
                 $response = Http::timeout(30)->get($url);
                 if (! $response->ok()) continue;
 
-                $ext = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
-                $path = 'motorcycles/' . $motorcycle->id . '/' . Str::uuid() . '.' . $ext;
+                $webp = $manager->read($response->body())->toWebp(quality: 85);
+                $path = 'motorcycles/' . $motorcycle->id . '/' . Str::uuid() . '.webp';
 
-                $mime = $response->header('Content-Type') ?: 'image/jpeg';
-                Storage::disk(MotorcycleImage::disk())->put($path, $response->body(), [
+                Storage::disk(MotorcycleImage::disk())->put($path, (string) $webp, [
                     'visibility'  => 'public',
-                    'ContentType' => $mime,
+                    'ContentType' => 'image/webp',
                 ]);
 
                 MotorcycleImage::create([

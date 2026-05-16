@@ -117,7 +117,7 @@
                                     <div class="mt-3 flex items-center justify-between">
                                         <span class="text-lg font-bold text-amber-400">£{{ number_format($bike->price, 2) }}</span>
                                         <span class="text-xs px-2 py-1 rounded-full {{ $bike->isInStock() ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30' }}">
-                                            {{ $bike->isInStock() ? 'In Stock' : 'Out of Stock' }}
+                                            {{ $bike->isInStock() ? 'In Stock' : 'Sold' }}
                                         </span>
                                     </div>
                                 </div>

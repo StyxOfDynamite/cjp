@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Motorcycle;
 use App\Models\MotorcycleImage;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,7 +19,8 @@ class ScrapeCjpMotorcycles extends Command
                             {--skip-details : Only use URL slug data — skip fetching individual product pages}
                             {--skip-images : Do not download images}
                             {--dry-run : Preview what would be imported without saving anything}
-                            {--limit= : Only process this many products (useful for testing)}';
+                            {--limit= : Only process this many products (useful for testing)}
+                            {--fresh : Clear scrape log and re-process all URLs from scratch}';
 
     protected $description = 'Scrape all CJP Motorcycles listings from the Weebly sitemap and import into the database';
 
@@ -45,6 +47,22 @@ class ScrapeCjpMotorcycles extends Command
         }
 
         $this->info('Found ' . count($urls) . ' products in sitemap.');
+
+        if ($this->option('fresh')) {
+            DB::table('scrape_log')->truncate();
+            $this->info('Scrape log cleared.');
+        }
+
+        // Filter out already-scraped URLs
+        $done = DB::table('scrape_log')->pluck('url')->flip();
+        $urls = array_values(array_filter($urls, fn ($u) => ! $done->has($u)));
+
+        if (empty($urls)) {
+            $this->info('All URLs already scraped. Use --fresh to re-process.');
+            return self::SUCCESS;
+        }
+
+        $this->info(count($urls) . ' remaining to scrape.');
 
         if ($limit = $this->option('limit')) {
             $urls = array_slice($urls, 0, (int) $limit);
@@ -84,6 +102,7 @@ class ScrapeCjpMotorcycles extends Command
             }
 
             $this->importMotorcycle($product);
+            DB::table('scrape_log')->insert(['url' => $product['detail_url']]);
             $bar->advance();
         }
 

@@ -7,6 +7,7 @@ use App\Models\MotorcycleImage;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
@@ -31,51 +32,51 @@ class ScrapeCjpMotorcycles extends Command
 
     public function handle(): int
     {
-        $this->info('Fetching sitemap...');
+        $this->log('Fetching sitemap...');
 
         $response = Http::timeout(30)->get(self::SITEMAP_URL);
 
         if (!$response->ok()) {
-            $this->error('Failed to fetch sitemap: HTTP ' . $response->status());
+            $this->log('Failed to fetch sitemap: HTTP ' . $response->status(), 'error');
             return self::FAILURE;
         }
 
         $urls = $this->parseSitemap($response->body());
 
         if (empty($urls)) {
-            $this->error('No product URLs found in sitemap.');
+            $this->log('No product URLs found in sitemap.', 'error');
             return self::FAILURE;
         }
 
-        $this->info('Found ' . count($urls) . ' products in sitemap.');
+        $this->log('Found ' . count($urls) . ' products in sitemap.');
 
         if ($this->option('fresh')) {
             DB::table('scrape_log')->truncate();
-            $this->info('Scrape log cleared.');
+            $this->log('Scrape log cleared.');
         }
 
         if ($skip = $this->option('skip')) {
             $urls = array_slice($urls, (int) $skip);
-            $this->info("Skipping first {$skip} URLs.");
+            $this->log("Skipping first {$skip} URLs.");
         }
 
-        // Filter out already-scraped URLs
         $done = DB::table('scrape_log')->pluck('url')->flip();
         $urls = array_values(array_filter($urls, fn($u) => !$done->has($u)));
 
         if (empty($urls)) {
-            $this->info('All URLs already scraped. Use --fresh to re-process.');
+            $this->log('All URLs already scraped. Use --fresh to re-process.');
             return self::SUCCESS;
         }
 
-        $this->info(count($urls) . ' remaining to scrape.');
+        $total = count($urls);
+        $this->log("{$total} remaining to scrape.");
 
         if ($limit = $this->option('limit')) {
             $urls = array_slice($urls, 0, (int) $limit);
-            $this->info("Limiting to {$limit} products.");
+            $total = count($urls);
+            $this->log("Limiting to {$total} products.");
         }
 
-        // Parse basic data from each URL slug upfront
         $products = array_map(fn($url) => $this->parseSlug($url), $urls);
 
         if ($this->option('dry-run')) {
@@ -92,32 +93,35 @@ class ScrapeCjpMotorcycles extends Command
                 ], $products)
             );
             $inStock = count(array_filter($products, fn($p) => $p['in_stock']));
-            $this->info("{$inStock} in stock, " . (count($products) - $inStock) . ' sold.');
+            $this->log("{$inStock} in stock, " . ($total - $inStock) . ' sold.');
             return self::SUCCESS;
         }
 
-        $bar = $this->output->createProgressBar(count($products));
-        $bar->start();
-
-        foreach ($products as $product) {
+        foreach ($products as $i => $product) {
             if (!$this->option('skip-details')) {
                 $detail = $this->fetchDetail($product['detail_url']);
-                // Only override slug-parsed values if the detail page found something
                 $product = array_merge($product, array_filter($detail, fn($v) => $v !== null && $v !== []));
             }
 
             $this->importMotorcycle($product);
             DB::table('scrape_log')->insertOrIgnore(['url' => $product['detail_url']]);
-            $bar->advance();
+
+            $n = $i + 1;
+            if ($n % 10 === 0 || $n === $total) {
+                $this->log("Progress: {$n}/{$total} scraped.");
+            }
         }
 
-        $bar->finish();
-        $this->newLine();
-
         $imported = Motorcycle::count();
-        $this->info("Import complete. {$imported} total motorcycles in database.");
+        $this->log("Import complete. {$imported} total motorcycles in database.");
 
         return self::SUCCESS;
+    }
+
+    private function log(string $message, string $level = 'info'): void
+    {
+        Log::$level('[scrape:cjp] ' . $message);
+        $this->$level($message);
     }
 
     // -------------------------------------------------------------------------

@@ -156,10 +156,10 @@
                     <p class="text-4xl font-extrabold text-amber-400 tracking-tight">30+</p>
                     <p class="text-zinc-400 text-sm mt-1">Years experience</p>
                 </div>
-                <div class="glass p-6">
+                <a href="{{ route('motorcycles.index', ['in_stock' => 1]) }}" class="glass p-6 hover:bg-white/10 transition-colors">
                     <p class="text-4xl font-extrabold text-amber-400 tracking-tight">{{ $inStockCount }}</p>
                     <p class="text-zinc-400 text-sm mt-1">Bikes in stock</p>
-                </div>
+                </a>
                 <div class="glass p-6">
                     <p class="text-xs font-medium uppercase tracking-widest text-zinc-500 mb-2">Call us</p>
                     <a href="tel:{{ config('seo.phone') }}" class="text-white font-semibold text-sm hover:text-amber-400 transition-colors">

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Drivers\Gd\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
 
 class ScrapeCjpMotorcycles extends Command
@@ -326,7 +327,7 @@ class ScrapeCjpMotorcycles extends Command
                 $response = Http::timeout(30)->get($url);
                 if (! $response->ok()) continue;
 
-                $webp = $manager->read($response->body())->toWebp(quality: 85);
+                $webp = $manager->decodeBinary($response->body())->encode(new WebpEncoder(85));
                 $path = 'motorcycles/' . $motorcycle->id . '/' . Str::uuid() . '.webp';
 
                 Storage::disk(MotorcycleImage::disk())->put($path, (string) $webp, [

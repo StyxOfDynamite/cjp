@@ -119,12 +119,15 @@
     <div class="border-t border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
-                <p class="text-white font-bold text-xl tracking-tight">{{ $inStockCount }} bikes currently in stock</p>
+                <a href="{{ route('motorcycles.index', ['in_stock' => 1]) }}"
+                   class="text-white font-bold text-xl tracking-tight hover:text-amber-400 transition-colors">
+                    {{ $inStockCount }} bikes currently in stock
+                </a>
                 <p class="text-zinc-400 text-sm mt-1">New stock added regularly — check back often.</p>
             </div>
-            <a href="{{ route('motorcycles.index') }}"
+            <a href="{{ route('motorcycles.index', ['in_stock' => 1]) }}"
                class="bg-amber-500 text-black font-semibold px-8 py-3 hover:bg-amber-400 transition-colors uppercase tracking-wide text-sm whitespace-nowrap">
-                Browse All Bikes
+                View In-Stock Bikes
             </a>
         </div>
     </div>

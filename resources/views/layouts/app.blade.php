@@ -19,7 +19,7 @@
 </head>
 <body class="font-sans antialiased">
 
-<nav class="glass-blur border-b border-white/10 sticky top-0 z-40">
+<nav class="bg-zinc-950 border-b border-white/10 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-18" style="height:4.5rem">
         <a href="{{ route('home') }}" class="text-2xl font-extrabold tracking-tight text-white uppercase">
             {{ config('seo.business_name', config('app.name')) }}

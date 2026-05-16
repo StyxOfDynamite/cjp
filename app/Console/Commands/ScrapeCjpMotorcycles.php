@@ -35,7 +35,7 @@ class ScrapeCjpMotorcycles extends Command
 
         $response = Http::timeout(30)->get(self::SITEMAP_URL);
 
-        if (! $response->ok()) {
+        if (!$response->ok()) {
             $this->error('Failed to fetch sitemap: HTTP ' . $response->status());
             return self::FAILURE;
         }
@@ -61,7 +61,7 @@ class ScrapeCjpMotorcycles extends Command
 
         // Filter out already-scraped URLs
         $done = DB::table('scrape_log')->pluck('url')->flip();
-        $urls = array_values(array_filter($urls, fn ($u) => ! $done->has($u)));
+        $urls = array_values(array_filter($urls, fn($u) => !$done->has($u)));
 
         if (empty($urls)) {
             $this->info('All URLs already scraped. Use --fresh to re-process.');
@@ -76,12 +76,12 @@ class ScrapeCjpMotorcycles extends Command
         }
 
         // Parse basic data from each URL slug upfront
-        $products = array_map(fn ($url) => $this->parseSlug($url), $urls);
+        $products = array_map(fn($url) => $this->parseSlug($url), $urls);
 
         if ($this->option('dry-run')) {
             $this->table(
                 ['Make', 'Model', 'Year', 'Price (£)', 'In Stock', 'Mileage (mi)', 'Engine (cc)'],
-                array_map(fn ($p) => [
+                array_map(fn($p) => [
                     $p['make'],
                     $p['model'],
                     $p['year'] ?? '—',
@@ -91,7 +91,7 @@ class ScrapeCjpMotorcycles extends Command
                     $p['engine_size_cc'] ?? '—',
                 ], $products)
             );
-            $inStock = count(array_filter($products, fn ($p) => $p['in_stock']));
+            $inStock = count(array_filter($products, fn($p) => $p['in_stock']));
             $this->info("{$inStock} in stock, " . (count($products) - $inStock) . ' sold.');
             return self::SUCCESS;
         }
@@ -100,11 +100,10 @@ class ScrapeCjpMotorcycles extends Command
         $bar->start();
 
         foreach ($products as $product) {
-            if (! $this->option('skip-details')) {
-                usleep(500_000); // 0.5s between requests
+            if (!$this->option('skip-details')) {
                 $detail = $this->fetchDetail($product['detail_url']);
                 // Only override slug-parsed values if the detail page found something
-                $product = array_merge($product, array_filter($detail, fn ($v) => $v !== null && $v !== []));
+                $product = array_merge($product, array_filter($detail, fn($v) => $v !== null && $v !== []));
             }
 
             $this->importMotorcycle($product);
@@ -195,13 +194,13 @@ class ScrapeCjpMotorcycles extends Command
         $parsed = $this->parseName(ucwords(strtolower($rawName)));
 
         return array_merge($parsed, [
-            'year'          => $year,
+            'year' => $year,
             'mileage_miles' => $mileage,
-            'price'         => $price,
-            'color'         => $color,
-            'in_stock'      => $inStock,
-            'detail_url'    => $url,
-            'images'        => [],
+            'price' => $price,
+            'color' => $color,
+            'in_stock' => $inStock,
+            'detail_url' => $url,
+            'images' => [],
         ]);
     }
 
@@ -223,21 +222,36 @@ class ScrapeCjpMotorcycles extends Command
             }
         }
 
-        if (! $make) {
+        if (!$make) {
             [$make, $model] = array_pad(explode(' ', $name, 2), 2, '');
         }
 
         return [
-            'make'           => $make,
-            'model'          => $model,
+            'make' => $make,
+            'model' => $model,
             'engine_size_cc' => $engineSize,
         ];
     }
 
     private function extractColor(string $slug): ?string
     {
-        $colors = ['black', 'red', 'blue', 'white', 'silver', 'grey', 'gray', 'green',
-                   'yellow', 'orange', 'purple', 'brown', 'gold', 'bronze', 'maroon'];
+        $colors = [
+            'black',
+            'red',
+            'blue',
+            'white',
+            'silver',
+            'grey',
+            'gray',
+            'green',
+            'yellow',
+            'orange',
+            'purple',
+            'brown',
+            'gold',
+            'bronze',
+            'maroon'
+        ];
 
         foreach ($colors as $color) {
             if (preg_match('/,\s*' . preg_quote($color, '/') . '\s*[,£]/i', $slug)) {
@@ -270,8 +284,13 @@ class ScrapeCjpMotorcycles extends Command
         libxml_clear_errors();
 
         $xpath = new \DOMXPath($dom);
-        $data = ['description' => null, 'year' => null, 'mileage_miles' => null,
-                 'engine_size_cc' => null, 'images' => []];
+        $data = [
+            'description' => null,
+            'year' => null,
+            'mileage_miles' => null,
+            'engine_size_cc' => null,
+            'images' => []
+        ];
 
         // Try itemprop="description" first (Weebly structured data markup)
         $nodes = $xpath->query('//*[@itemprop="description"]');
@@ -307,7 +326,8 @@ class ScrapeCjpMotorcycles extends Command
         $images = [];
         foreach ($xpath->query('//img[contains(@src, "/uploads/")]') as $img) {
             $src = preg_replace('/\?.*$/', '', $img->getAttribute('src'));
-            if (! $src) continue;
+            if (!$src)
+                continue;
             $images[] = str_starts_with($src, 'http') ? $src : self::BASE_URL . $src;
         }
         $data['images'] = array_values(array_unique($images));
@@ -322,21 +342,21 @@ class ScrapeCjpMotorcycles extends Command
     private function importMotorcycle(array $data): void
     {
         $motorcycle = Motorcycle::firstOrNew([
-            'make'  => $data['make'],
+            'make' => $data['make'],
             'model' => $data['model'],
-            'year'  => $data['year'],
+            'year' => $data['year'],
             'price' => $data['price'] ?? 0,
         ]);
 
         $motorcycle->fill(array_filter([
             'stock_quantity' => $data['in_stock'] ? 1 : 0,
-            'description'    => $data['description'] ?? null,
-            'mileage_miles'  => $data['mileage_miles'] ?? null,
+            'description' => $data['description'] ?? null,
+            'mileage_miles' => $data['mileage_miles'] ?? null,
             'engine_size_cc' => $data['engine_size_cc'] ?? null,
-            'color'          => $data['color'] ?? null,
-        ], fn ($v) => $v !== null));
+            'color' => $data['color'] ?? null,
+        ], fn($v) => $v !== null));
 
-        if (! $motorcycle->price) {
+        if (!$motorcycle->price) {
             $motorcycle->price = 0;
         }
 
@@ -347,7 +367,7 @@ class ScrapeCjpMotorcycles extends Command
         }
 
         $urls = $data['images'] ?? [];
-        if (! empty($urls)) {
+        if (!empty($urls)) {
             $this->downloadImages($motorcycle, $urls);
         }
     }
@@ -359,22 +379,23 @@ class ScrapeCjpMotorcycles extends Command
         foreach (array_slice($urls, 0, 10) as $i => $url) {
             try {
                 $response = Http::timeout(30)->get($url);
-                if (! $response->ok()) continue;
+                if (!$response->ok())
+                    continue;
 
                 $webp = $manager->decodeBinary($response->body())->encode(new WebpEncoder(85));
                 $path = 'motorcycles/' . $motorcycle->id . '/' . Str::uuid() . '.webp';
 
                 Storage::disk(MotorcycleImage::disk())->put($path, (string) $webp, [
-                    'visibility'  => 'public',
+                    'visibility' => 'public',
                     'ContentType' => 'image/webp',
                 ]);
 
                 MotorcycleImage::create([
                     'motorcycle_id' => $motorcycle->id,
-                    'path'          => $path,
-                    'alt_text'      => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
-                    'sort_order'    => $i,
-                    'is_primary'    => $i === 0,
+                    'path' => $path,
+                    'alt_text' => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
+                    'sort_order' => $i,
+                    'is_primary' => $i === 0,
                 ]);
             } catch (\Exception) {
                 // Skip images that fail

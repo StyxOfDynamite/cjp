@@ -30,6 +30,10 @@ class MotorcycleImage extends Model
     // Falls back to the full image if no thumbnail exists yet.
     public function getThumbnailUrlAttribute(): string
     {
+        if (! $this->has_thumbnail) {
+            return $this->url;
+        }
+
         $thumb = preg_replace('/\.webp$/', '_thumb.webp', $this->path);
         return Storage::disk(self::disk())->url($thumb);
     }

@@ -248,11 +248,20 @@ class ScrapeCjpMotorcycles extends Command
         $data = ['description' => null, 'year' => null, 'mileage_miles' => null,
                  'engine_size_cc' => null, 'images' => []];
 
-        foreach (['product-description', 'wsite-product-description', 'wsite-description'] as $cls) {
-            $nodes = $xpath->query("//*[contains(@class, '{$cls}')]");
-            if ($nodes->length > 0) {
-                $data['description'] = trim($nodes->item(0)->textContent);
-                break;
+        // Try itemprop="description" first (Weebly structured data markup)
+        $nodes = $xpath->query('//*[@itemprop="description"]');
+        if ($nodes->length > 0) {
+            $data['description'] = trim($nodes->item(0)->textContent);
+        }
+
+        // Fallback to common class names
+        if (empty($data['description'])) {
+            foreach (['product-description', 'wsite-product-description', 'wsite-description'] as $cls) {
+                $nodes = $xpath->query("//*[contains(@class, '{$cls}')]");
+                if ($nodes->length > 0) {
+                    $data['description'] = trim($nodes->item(0)->textContent);
+                    break;
+                }
             }
         }
 

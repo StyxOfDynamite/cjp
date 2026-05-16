@@ -57,7 +57,7 @@
                     {{-- Image --}}
                     <div class="relative aspect-video bg-zinc-900">
                         @if($img)
-                            <img src="{{ $img->url }}" alt="{{ $img->alt_text }}"
+                            <img src="{{ $img->thumbnail_url }}" alt="{{ $img->alt_text }}"
                                  loading="lazy"
                                  class="w-full h-full object-cover opacity-90">
                         @else

@@ -25,6 +25,14 @@ class MotorcycleImage extends Model
         return Storage::disk(self::disk())->url($this->path);
     }
 
+    // Thumbnail is stored alongside the full image with a _thumb suffix.
+    // Falls back to the full image if no thumbnail exists yet.
+    public function getThumbnailUrlAttribute(): string
+    {
+        $thumb = preg_replace('/\.webp$/', '_thumb.webp', $this->path);
+        return Storage::disk(self::disk())->url($thumb);
+    }
+
     public static function disk(): string
     {
         // 'local' is private-only; map it to the public disk for local dev.

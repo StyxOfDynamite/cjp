@@ -386,13 +386,15 @@ class ScrapeCjpMotorcycles extends Command
                 if (!$response->ok())
                     continue;
 
-                $webp = $manager->decodeBinary($response->body())->encode(new WebpEncoder(85));
-                $path = 'motorcycles/' . $motorcycle->id . '/' . Str::uuid() . '.webp';
+                $content = $response->body();
+                $uuid    = Str::uuid();
+                $disk    = MotorcycleImage::disk();
+                $path    = 'motorcycles/' . $motorcycle->id . '/' . $uuid . '.webp';
+                $thumb   = 'motorcycles/' . $motorcycle->id . '/' . $uuid . '_thumb.webp';
+                $options = ['visibility' => 'public', 'ContentType' => 'image/webp', 'CacheControl' => 'max-age=31536000, immutable'];
 
-                Storage::disk(MotorcycleImage::disk())->put($path, (string) $webp, [
-                    'visibility' => 'public',
-                    'ContentType' => 'image/webp',
-                ]);
+                Storage::disk($disk)->put($path,  (string) $manager->decodeBinary($content)->encode(new WebpEncoder(85)), $options);
+                Storage::disk($disk)->put($thumb, (string) $manager->decodeBinary($content)->scaleDown(width: 600)->encode(new WebpEncoder(80)), $options);
 
                 MotorcycleImage::create([
                     'motorcycle_id' => $motorcycle->id,

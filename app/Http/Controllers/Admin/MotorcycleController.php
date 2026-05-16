@@ -116,12 +116,14 @@ class MotorcycleController extends Controller
         $manager = new ImageManager(new GdDriver());
 
         foreach ($request->file('images') as $i => $file) {
-            $webp = $manager->decodeBinary($file->getContent())->encode(new WebpEncoder(85));
-            $path = "motorcycles/{$motorcycle->id}/" . Str::uuid() . ".webp";
-            Storage::disk($disk)->put($path, (string) $webp, [
-                'visibility'  => 'public',
-                'ContentType' => 'image/webp',
-            ]);
+            $content = $file->getContent();
+            $uuid    = Str::uuid();
+            $path    = "motorcycles/{$motorcycle->id}/{$uuid}.webp";
+            $thumb   = "motorcycles/{$motorcycle->id}/{$uuid}_thumb.webp";
+            $options = ['visibility' => 'public', 'ContentType' => 'image/webp', 'CacheControl' => 'max-age=31536000, immutable'];
+
+            Storage::disk($disk)->put($path,  (string) $manager->decodeBinary($content)->encode(new WebpEncoder(85)), $options);
+            Storage::disk($disk)->put($thumb, (string) $manager->decodeBinary($content)->scaleDown(width: 600)->encode(new WebpEncoder(80)), $options);
             $motorcycle->images()->create([
                 'path'       => $path,
                 'alt_text'   => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",

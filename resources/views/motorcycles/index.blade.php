@@ -91,7 +91,7 @@
                             <a href="{{ route('motorcycles.show', $bike) }}" class="group glass overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-200">
                                 <div class="aspect-video bg-zinc-900 overflow-hidden">
                                     @if($primary)
-                                        <img src="{{ $primary->url }}" alt="{{ $primary->alt_text ?? $bike->year . ' ' . $bike->make . ' ' . $bike->model }}"
+                                        <img src="{{ $loop->first ? $primary->url : $primary->thumbnail_url }}" alt="{{ $primary->alt_text ?? $bike->year . ' ' . $bike->make . ' ' . $bike->model }}"
                                              loading="{{ $loop->index < 3 ? 'eager' : 'lazy' }}"
                                              fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
                                              decoding="{{ $loop->first ? 'sync' : 'async' }}"

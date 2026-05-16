@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 @include('partials.seo')
+    @stack('head')
+    @vite(['resources/css/app.css', 'resources/js/public.js'])
     @if(config('services.google.analytics_id'))
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google.analytics_id') }}"></script>
     <script>
@@ -14,8 +16,6 @@
         gtag('config', '{{ config('services.google.analytics_id') }}');
     </script>
     @endif
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @stack('head')
 </head>
 <body class="font-sans antialiased">
 

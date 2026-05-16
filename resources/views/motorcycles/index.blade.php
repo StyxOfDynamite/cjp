@@ -94,6 +94,7 @@
                                         <img src="{{ $primary->url }}" alt="{{ $primary->alt_text ?? $bike->year . ' ' . $bike->make . ' ' . $bike->model }}"
                                              loading="{{ $loop->index < 3 ? 'eager' : 'lazy' }}"
                                              fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
+                                             decoding="{{ $loop->first ? 'sync' : 'async' }}"
                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-zinc-700">

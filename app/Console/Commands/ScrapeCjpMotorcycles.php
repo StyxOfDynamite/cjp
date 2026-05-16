@@ -20,7 +20,8 @@ class ScrapeCjpMotorcycles extends Command
                             {--skip-images : Do not download images}
                             {--dry-run : Preview what would be imported without saving anything}
                             {--limit= : Only process this many products (useful for testing)}
-                            {--fresh : Clear scrape log and re-process all URLs from scratch}';
+                            {--fresh : Clear scrape log and re-process all URLs from scratch}
+                            {--skip= : Skip the first N URLs in the sitemap}';
 
     protected $description = 'Scrape all CJP Motorcycles listings from the Weebly sitemap and import into the database';
 
@@ -51,6 +52,11 @@ class ScrapeCjpMotorcycles extends Command
         if ($this->option('fresh')) {
             DB::table('scrape_log')->truncate();
             $this->info('Scrape log cleared.');
+        }
+
+        if ($skip = $this->option('skip')) {
+            $urls = array_slice($urls, (int) $skip);
+            $this->info("Skipping first {$skip} URLs.");
         }
 
         // Filter out already-scraped URLs

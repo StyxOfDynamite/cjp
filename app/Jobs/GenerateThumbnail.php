@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\MotorcycleImage;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
@@ -11,7 +12,7 @@ use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 use Intervention\Image\Drivers\Gd\Encoders\WebpEncoder;
 use Intervention\Image\ImageManager;
 
-class GenerateThumbnail implements ShouldQueue
+class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 {
     use Queueable;
 
@@ -19,6 +20,11 @@ class GenerateThumbnail implements ShouldQueue
     public int $timeout = 120;
 
     public function __construct(public readonly MotorcycleImage $image) {}
+
+    public function uniqueId(): string
+    {
+        return (string) $this->image->id;
+    }
 
     public function handle(): void
     {

@@ -1,12 +1,6 @@
 <x-admin-layout heading="Motorcycles">
 
-    <div class="flex items-center justify-between mb-4">
-        <p class="text-sm text-zinc-500">{{ $motorcycles->total() }} motorcycle(s) total</p>
-        <a href="{{ route('admin.motorcycles.create') }}"
-           class="inline-flex items-center gap-1 bg-amber-500 text-black text-sm font-semibold px-4 py-2 hover:bg-amber-400 transition-colors">
-            + Add Motorcycle
-        </a>
-    </div>
+    <p class="text-sm text-zinc-500 mb-4">{{ $motorcycles->total() }} motorcycle(s) total</p>
 
     <form method="GET" action="{{ route('admin.motorcycles.index') }}" class="mb-6 glass p-4">
         <div class="flex flex-wrap gap-3">
@@ -55,8 +49,8 @@
         </div>
     </form>
 
-    <div class="glass overflow-hidden">
-        <table class="min-w-full divide-y divide-white/10 text-sm">
+    <div class="glass overflow-hidden overflow-x-auto">
+        <table class="min-w-full divide-y divide-white/10 text-sm whitespace-nowrap">
             <thead class="bg-white/5">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wide">Motorcycle</th>

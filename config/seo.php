@@ -10,8 +10,8 @@ return [
     'address_postcode'    => env('SEO_ADDRESS_POSTCODE', '2000'),
     'address_country'     => env('SEO_ADDRESS_COUNTRY', 'AU'),
     'default_description' => env('SEO_DEFAULT_DESCRIPTION', 'Quality motorcycles for sale. Browse our full range of new and used bikes.'),
-    'opening_hours'         => ['Mo-Fr 09:00-15:00'],
-    'opening_hours_display' => ['Monday – Friday: 9am – 3pm', 'Saturday: Closed', 'Sunday: Closed'],
+    'opening_hours'         => [env('SEO_OPENING_HOURS', 'Mo-Fr 09:00-15:00')],
+    'opening_hours_display' => ['Monday – Friday: 9am – 3pm', 'Saturday – Sunday: Closed'],
 
     'logo_url'        => env('SEO_LOGO_URL'),
     'geo_latitude'    => env('SEO_GEO_LATITUDE'),

@@ -7,163 +7,163 @@
     @endphp
 
     <div class="max-w-3xl">
-        <form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-8">
+        <form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @if(isset($motorcycle->id)) @method('PUT') @endif
 
             {{-- Core details --}}
-            <div class="bg-white rounded-xl shadow-sm p-6 space-y-5">
-                <h2 class="font-semibold text-gray-800 border-b pb-2">Details</h2>
+            <div class="glass p-6 space-y-5">
+                <h2 class="text-xs font-medium text-zinc-500 uppercase tracking-widest border-b border-white/10 pb-3">Details</h2>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Make <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Make <span class="text-red-400">*</span></label>
                         <input type="text" name="make" value="{{ old('make', $motorcycle->make ?? '') }}" required
-                               class="w-full rounded-md border-gray-300 shadow-sm text-sm @error('make') border-red-400 @enderror">
-                        @error('make') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                               class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500 @error('make') border-red-500/50 @enderror">
+                        @error('make') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Model <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Model <span class="text-red-400">*</span></label>
                         <input type="text" name="model" value="{{ old('model', $motorcycle->model ?? '') }}" required
-                               class="w-full rounded-md border-gray-300 shadow-sm text-sm @error('model') border-red-400 @enderror">
-                        @error('model') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                               class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500 @error('model') border-red-500/50 @enderror">
+                        @error('model') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Year <span class="text-red-500">*</span></label>
-                        <input type="number" name="year" value="{{ old('year', $motorcycle->year ?? date('Y')) }}" min="1900" max="{{ date('Y') + 1 }}" required
-                               class="w-full rounded-md border-gray-300 shadow-sm text-sm @error('year') border-red-400 @enderror">
-                        @error('year') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Year</label>
+                        <input type="number" name="year" value="{{ old('year', $motorcycle->year ?? date('Y')) }}" min="1900" max="{{ date('Y') + 1 }}"
+                               class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500 @error('year') border-red-500/50 @enderror">
+                        @error('year') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Colour</label>
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Colour</label>
                         <input type="text" name="color" value="{{ old('color', $motorcycle->color ?? '') }}"
-                               class="w-full rounded-md border-gray-300 shadow-sm text-sm">
+                               class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Engine (cc)</label>
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Engine (cc)</label>
                         <input type="number" name="engine_size_cc" value="{{ old('engine_size_cc', $motorcycle->engine_size_cc ?? '') }}" min="1"
-                               class="w-full rounded-md border-gray-300 shadow-sm text-sm">
+                               class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Mileage (miles)</label>
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Mileage (miles)</label>
                         <input type="number" name="mileage_miles" value="{{ old('mileage_miles', $motorcycle->mileage_miles ?? '') }}" min="0"
-                               class="w-full rounded-md border-gray-300 shadow-sm text-sm">
+                               class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Price <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Price <span class="text-red-400">*</span></label>
                         <div class="relative">
-                            <span class="absolute inset-y-0 left-3 flex items-center text-gray-400 text-sm">$</span>
+                            <span class="absolute inset-y-0 left-3 flex items-center text-zinc-500 text-sm">£</span>
                             <input type="number" name="price" value="{{ old('price', $motorcycle->price ?? '') }}" min="0" step="0.01" required
-                                   class="w-full pl-7 rounded-md border-gray-300 shadow-sm text-sm @error('price') border-red-400 @enderror">
+                                   class="w-full pl-7 bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500 @error('price') border-red-500/50 @enderror">
                         </div>
-                        @error('price') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                        @error('price') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity <span class="text-red-500">*</span></label>
+                        <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Stock Quantity <span class="text-red-400">*</span></label>
                         <input type="number" name="stock_quantity" value="{{ old('stock_quantity', $motorcycle->stock_quantity ?? 0) }}" min="0" required
-                               class="w-full rounded-md border-gray-300 shadow-sm text-sm @error('stock_quantity') border-red-400 @enderror">
-                        @error('stock_quantity') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                               class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500 @error('stock_quantity') border-red-500/50 @enderror">
+                        @error('stock_quantity') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Description</label>
                     <textarea name="description" rows="5"
-                              class="w-full rounded-md border-gray-300 shadow-sm text-sm">{{ old('description', $motorcycle->description ?? '') }}</textarea>
+                              class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500">{{ old('description', $motorcycle->description ?? '') }}</textarea>
                 </div>
 
                 <div class="flex items-center gap-2">
                     <input type="hidden" name="is_featured" value="0">
                     <input type="checkbox" id="is_featured" name="is_featured" value="1"
                            @checked(old('is_featured', $motorcycle->is_featured ?? false))
-                           class="rounded border-gray-300 text-indigo-600">
-                    <label for="is_featured" class="text-sm text-gray-700">Featured (shown first in listing)</label>
+                           class="rounded-none border-white/20 bg-white/5 text-amber-500 focus:ring-amber-500">
+                    <label for="is_featured" class="text-sm text-zinc-400">Featured (shown first in listing)</label>
                 </div>
             </div>
 
             {{-- SEO --}}
-            <div class="bg-white rounded-xl shadow-sm p-6 space-y-4">
-                <h2 class="font-semibold text-gray-800 border-b pb-2">SEO <span class="text-xs text-gray-400 font-normal">(optional overrides)</span></h2>
+            <div class="glass p-6 space-y-4">
+                <h2 class="text-xs font-medium text-zinc-500 uppercase tracking-widest border-b border-white/10 pb-3">SEO <span class="text-zinc-600 font-normal normal-case tracking-normal">(optional overrides)</span></h2>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                    <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Meta Title</label>
                     <input type="text" name="meta_title" value="{{ old('meta_title', $motorcycle->meta_title ?? '') }}" maxlength="255"
                            placeholder="{{ ($motorcycle->year ?? date('Y')) . ' ' . ($motorcycle->make ?? 'Make') . ' ' . ($motorcycle->model ?? 'Model') }}"
-                           class="w-full rounded-md border-gray-300 shadow-sm text-sm">
+                           class="w-full bg-white/5 border-white/10 text-zinc-100 placeholder-zinc-600 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                    <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">Meta Description</label>
                     <textarea name="meta_description" rows="2" maxlength="500"
-                              class="w-full rounded-md border-gray-300 shadow-sm text-sm">{{ old('meta_description', $motorcycle->meta_description ?? '') }}</textarea>
+                              class="w-full bg-white/5 border-white/10 text-zinc-100 rounded-none shadow-none text-sm focus:border-amber-500 focus:ring-amber-500">{{ old('meta_description', $motorcycle->meta_description ?? '') }}</textarea>
                 </div>
             </div>
 
             {{-- Images --}}
-            <div class="bg-white rounded-xl shadow-sm p-6 space-y-4">
-                <h2 class="font-semibold text-gray-800 border-b pb-2">Images</h2>
+            <div class="glass p-6 space-y-4">
+                <h2 class="text-xs font-medium text-zinc-500 uppercase tracking-widest border-b border-white/10 pb-3">Images</h2>
 
                 @if(isset($motorcycle->id) && $motorcycle->images->isNotEmpty())
                     <div class="grid grid-cols-4 gap-3">
                         @foreach($motorcycle->images as $img)
                             <div class="relative group">
-                                <img src="{{ $img->url }}" alt="{{ $img->alt_text }}" class="w-full aspect-square object-cover rounded-lg">
+                                <img src="{{ $img->url }}" alt="{{ $img->alt_text }}" class="w-full aspect-square object-cover border border-white/10">
                                 @if($img->is_primary)
-                                    <span class="absolute top-1 left-1 text-xs bg-indigo-600 text-white px-1.5 py-0.5 rounded">Primary</span>
+                                    <span class="absolute top-1 left-1 text-xs bg-amber-500 text-black px-1.5 py-0.5 font-semibold">Primary</span>
                                 @else
                                     <button type="submit" form="set-primary-{{ $img->id }}"
-                                            class="absolute top-1 left-1 hidden group-hover:block text-xs bg-white border text-gray-600 px-1.5 py-0.5 rounded hover:bg-indigo-50">Set Primary</button>
+                                            class="absolute top-1 left-1 hidden group-hover:block text-xs glass-light text-zinc-300 px-1.5 py-0.5 hover:text-white transition-colors">Set Primary</button>
                                 @endif
                                 <button type="submit" form="delete-image-{{ $img->id }}"
-                                        class="absolute top-1 right-1 hidden group-hover:block text-xs bg-red-500 text-white px-1.5 py-0.5 rounded hover:bg-red-600">&times;</button>
+                                        class="absolute top-1 right-1 hidden group-hover:block text-xs bg-red-500/80 text-white px-1.5 py-0.5 hover:bg-red-500 transition-colors">&times;</button>
                             </div>
                         @endforeach
                     </div>
                 @endif
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">
                         {{ isset($motorcycle->id) ? 'Add More Images' : 'Upload Images' }}
                     </label>
                     <input type="file" name="images[]" multiple accept="image/*"
-                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                    <p class="text-xs text-gray-400 mt-1">Max 5MB per image. First image will be set as primary.</p>
-                    @error('images.*') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                           class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-black hover:file:bg-amber-400 file:transition-colors">
+                    <p class="text-xs text-zinc-600 mt-1">Max 5MB per image. First image will be set as primary.</p>
+                    @error('images.*') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             {{-- Video --}}
-            <div class="bg-white rounded-xl shadow-sm p-6 space-y-4">
-                <h2 class="font-semibold text-gray-800 border-b pb-2">Video <span class="text-xs text-gray-400 font-normal">(optional)</span></h2>
+            <div class="glass p-6 space-y-4">
+                <h2 class="text-xs font-medium text-zinc-500 uppercase tracking-widest border-b border-white/10 pb-3">Video <span class="text-zinc-600 font-normal normal-case tracking-normal">(optional)</span></h2>
 
                 @if(isset($motorcycle->id) && $motorcycle->video_path)
                     <div class="space-y-3">
-                        <video src="{{ $motorcycle->video_url }}" controls class="w-full rounded-lg max-h-56 bg-black"></video>
+                        <video src="{{ $motorcycle->video_url }}" controls class="w-full max-h-56 bg-black border border-white/10"></video>
                         <button type="submit" form="remove-video-form"
-                                class="text-xs text-red-600 hover:text-red-700 font-medium">Remove video</button>
+                                class="text-xs text-red-400 hover:text-red-300 font-medium transition-colors">Remove video</button>
                     </div>
                 @endif
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-xs font-medium text-zinc-500 uppercase tracking-wide mb-1">
                         {{ isset($motorcycle->id) && $motorcycle->video_path ? 'Replace Video' : 'Upload Video' }}
                     </label>
                     <input type="file" name="video" accept="video/mp4,video/webm,video/quicktime"
-                           class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                    <p class="text-xs text-gray-400 mt-1">Accepted: MP4, WebM, MOV. Max 200MB.</p>
-                    @error('video') <p class="text-xs text-red-500 mt-1">{{ $message }}</p> @enderror
+                           class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-black hover:file:bg-amber-400 file:transition-colors">
+                    <p class="text-xs text-zinc-600 mt-1">Accepted: MP4, WebM, MOV. Max 200MB.</p>
+                    @error('video') <p class="text-xs text-red-400 mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
-                <button type="submit" class="inline-flex items-center bg-indigo-600 text-white text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-indigo-700 transition-colors">
+                <button type="submit" class="inline-flex items-center bg-amber-500 text-black text-sm font-semibold px-6 py-2.5 hover:bg-amber-400 transition-colors">
                     {{ isset($motorcycle->id) ? 'Update Motorcycle' : 'Add Motorcycle' }}
                 </button>
-                <a href="{{ route('admin.motorcycles.index') }}" class="text-sm text-gray-500 hover:text-gray-700">Cancel</a>
+                <a href="{{ route('admin.motorcycles.index') }}" class="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">Cancel</a>
             </div>
         </form>
 

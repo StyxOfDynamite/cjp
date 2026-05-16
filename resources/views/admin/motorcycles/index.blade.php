@@ -1,53 +1,53 @@
 <x-admin-layout heading="Motorcycles">
 
     <div class="flex items-center justify-between mb-4">
-        <p class="text-sm text-gray-500">{{ $motorcycles->total() }} motorcycle(s) total</p>
+        <p class="text-sm text-zinc-500">{{ $motorcycles->total() }} motorcycle(s) total</p>
         <a href="{{ route('admin.motorcycles.create') }}"
-           class="inline-flex items-center gap-1 bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700">
+           class="inline-flex items-center gap-1 bg-amber-500 text-black text-sm font-semibold px-4 py-2 hover:bg-amber-400 transition-colors">
             + Add Motorcycle
         </a>
     </div>
 
-    <form method="GET" action="{{ route('admin.motorcycles.index') }}" class="mb-6 bg-white rounded-xl shadow-sm p-4">
+    <form method="GET" action="{{ route('admin.motorcycles.index') }}" class="mb-6 glass p-4">
         <div class="flex flex-wrap gap-3">
             <div class="flex-1 min-w-48">
                 <input type="text" name="search" value="{{ $filters['search'] ?? '' }}"
                        placeholder="Search name, make, model, description…"
-                       class="w-full rounded-lg border-gray-300 text-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+                       class="w-full bg-white/5 border-white/10 text-zinc-100 placeholder-zinc-600 text-sm px-3 py-2 rounded-none focus:ring-amber-500 focus:border-amber-500">
             </div>
             <div class="flex items-center gap-1">
                 <input type="number" name="year_min" value="{{ $filters['year_min'] ?? '' }}"
                        placeholder="Year from" min="1900" max="{{ date('Y') + 1 }}"
-                       class="w-28 rounded-lg border-gray-300 text-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
-                <span class="text-gray-400 text-sm">–</span>
+                       class="w-28 bg-white/5 border-white/10 text-zinc-100 placeholder-zinc-600 text-sm px-3 py-2 rounded-none focus:ring-amber-500 focus:border-amber-500">
+                <span class="text-zinc-600 text-sm">–</span>
                 <input type="number" name="year_max" value="{{ $filters['year_max'] ?? '' }}"
                        placeholder="Year to" min="1900" max="{{ date('Y') + 1 }}"
-                       class="w-28 rounded-lg border-gray-300 text-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+                       class="w-28 bg-white/5 border-white/10 text-zinc-100 placeholder-zinc-600 text-sm px-3 py-2 rounded-none focus:ring-amber-500 focus:border-amber-500">
             </div>
             <div class="flex items-center gap-1">
-                <span class="text-gray-400 text-sm">£</span>
+                <span class="text-zinc-600 text-sm">£</span>
                 <input type="number" name="price_min" value="{{ $filters['price_min'] ?? '' }}"
                        placeholder="Min price" min="0" step="0.01"
-                       class="w-28 rounded-lg border-gray-300 text-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
-                <span class="text-gray-400 text-sm">–</span>
+                       class="w-28 bg-white/5 border-white/10 text-zinc-100 placeholder-zinc-600 text-sm px-3 py-2 rounded-none focus:ring-amber-500 focus:border-amber-500">
+                <span class="text-zinc-600 text-sm">–</span>
                 <input type="number" name="price_max" value="{{ $filters['price_max'] ?? '' }}"
                        placeholder="Max price" min="0" step="0.01"
-                       class="w-28 rounded-lg border-gray-300 text-sm px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+                       class="w-28 bg-white/5 border-white/10 text-zinc-100 placeholder-zinc-600 text-sm px-3 py-2 rounded-none focus:ring-amber-500 focus:border-amber-500">
             </div>
             <div class="flex items-center gap-2">
-                <label class="flex items-center gap-1.5 text-sm text-gray-600 cursor-pointer select-none">
+                <label class="flex items-center gap-1.5 text-sm text-zinc-400 cursor-pointer select-none">
                     <input type="checkbox" name="in_stock" value="1"
                            {{ !empty($filters['in_stock']) ? 'checked' : '' }}
-                           class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                           class="rounded-none border-white/20 bg-white/5 text-amber-500 focus:ring-amber-500">
                     In stock only
                 </label>
                 <button type="submit"
-                        class="bg-indigo-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-indigo-700">
+                        class="bg-amber-500 text-black text-sm font-semibold px-4 py-2 hover:bg-amber-400 transition-colors">
                     Filter
                 </button>
                 @if(array_filter($filters))
                     <a href="{{ route('admin.motorcycles.index') }}"
-                       class="text-sm text-gray-500 hover:text-gray-700 px-2 py-2">
+                       class="text-sm text-zinc-500 hover:text-zinc-300 px-2 py-2 transition-colors">
                         Clear
                     </a>
                 @endif
@@ -55,70 +55,70 @@
         </div>
     </form>
 
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
-            <thead class="bg-gray-50">
+    <div class="glass overflow-hidden">
+        <table class="min-w-full divide-y divide-white/10 text-sm">
+            <thead class="bg-white/5">
                 <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Motorcycle</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Featured</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wide">Motorcycle</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wide">Price</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wide">Stock</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wide">Featured</th>
                     <th class="px-4 py-3"></th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y divide-white/5">
                 @forelse($motorcycles as $bike)
-                    <tr class="hover:bg-gray-50" x-data="{ editing: false, qty: {{ $bike->stock_quantity }} }">
+                    <tr class="hover:bg-white/5 transition-colors" x-data="{ editing: false, qty: {{ $bike->stock_quantity }} }">
                         <td class="px-4 py-3 flex items-center gap-3">
                             @php $img = $bike->images->first(); @endphp
                             <a href="{{ route('motorcycles.show', $bike) }}" target="_blank" class="flex-shrink-0">
                                 @if($img)
-                                    <img src="{{ $img->url }}" alt="{{ $img->alt_text }}" class="w-12 h-10 rounded object-cover hover:opacity-80 transition-opacity">
+                                    <img src="{{ $img->url }}" alt="{{ $img->alt_text }}" class="w-12 h-10 object-cover hover:opacity-80 transition-opacity">
                                 @else
-                                    <div class="w-12 h-10 rounded bg-gray-100"></div>
+                                    <div class="w-12 h-10 bg-white/5 border border-white/10"></div>
                                 @endif
                             </a>
                             <div>
                                 <a href="{{ route('motorcycles.show', $bike) }}" target="_blank"
-                                   class="font-medium text-gray-900 hover:text-indigo-600">{{ $bike->year }} {{ $bike->make }} {{ $bike->model }}</a>
-                                @if($bike->color)<p class="text-xs text-gray-400">{{ $bike->color }}</p>@endif
+                                   class="font-medium text-zinc-100 hover:text-amber-400 transition-colors">{{ $bike->year }} {{ $bike->make }} {{ $bike->model }}</a>
+                                @if($bike->color)<p class="text-xs text-zinc-600">{{ $bike->color }}</p>@endif
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-gray-700">£{{ number_format($bike->price, 2) }}</td>
+                        <td class="px-4 py-3 text-zinc-300">£{{ number_format($bike->price, 2) }}</td>
                         <td class="px-4 py-3">
                             <div x-show="!editing" class="flex items-center gap-2">
-                                <span class="font-medium {{ $bike->stock_quantity > 0 ? 'text-green-700' : 'text-red-600' }}">
+                                <span class="font-medium {{ $bike->stock_quantity > 0 ? 'text-green-400' : 'text-red-400' }}">
                                     {{ $bike->stock_quantity }}
                                 </span>
-                                <button @click="editing = true" class="text-xs text-indigo-500 hover:text-indigo-700">edit</button>
+                                <button @click="editing = true" class="text-xs text-amber-400 hover:text-amber-300 transition-colors">edit</button>
                             </div>
                             <form x-show="editing" method="POST" action="{{ route('admin.motorcycles.stock', $bike) }}" class="flex items-center gap-1">
                                 @csrf @method('PATCH')
                                 <input type="number" name="stock_quantity" x-model="qty" min="0"
-                                       class="w-20 rounded border-gray-300 text-sm px-2 py-1">
-                                <button type="submit" class="text-xs bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700">Save</button>
-                                <button type="button" @click="editing = false" class="text-xs text-gray-400 hover:text-gray-600">Cancel</button>
+                                       class="w-20 bg-white/5 border-white/10 text-zinc-100 text-sm px-2 py-1 rounded-none">
+                                <button type="submit" class="text-xs bg-amber-500 text-black px-2 py-1 hover:bg-amber-400 transition-colors">Save</button>
+                                <button type="button" @click="editing = false" class="text-xs text-zinc-600 hover:text-zinc-300 transition-colors">Cancel</button>
                             </form>
                         </td>
                         <td class="px-4 py-3">
                             @if($bike->is_featured)
-                                <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded">Featured</span>
+                                <span class="text-xs bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5">Featured</span>
                             @endif
                         </td>
                         <td class="px-4 py-3 text-right whitespace-nowrap">
-                            <a href="{{ route('motorcycles.show', $bike) }}" target="_blank" class="text-xs text-gray-400 hover:text-gray-600 mr-2">View</a>
-                            <a href="{{ route('admin.motorcycles.edit', $bike) }}" class="text-xs text-indigo-600 hover:text-indigo-800 mr-2">Edit</a>
+                            <a href="{{ route('motorcycles.show', $bike) }}" target="_blank" class="text-xs text-zinc-600 hover:text-zinc-300 mr-2 transition-colors">View</a>
+                            <a href="{{ route('admin.motorcycles.edit', $bike) }}" class="text-xs text-amber-400 hover:text-amber-300 mr-2 transition-colors">Edit</a>
                             <form method="POST" action="{{ route('admin.motorcycles.destroy', $bike) }}" class="inline"
                                   onsubmit="return confirm('Delete this motorcycle?')">
                                 @csrf @method('DELETE')
-                                <button type="submit" class="text-xs text-red-500 hover:text-red-700">Delete</button>
+                                <button type="submit" class="text-xs text-red-400 hover:text-red-300 transition-colors">Delete</button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-4 py-10 text-center text-gray-400">
-                            No motorcycles yet. <a href="{{ route('admin.motorcycles.create') }}" class="text-indigo-600 hover:underline">Add the first one.</a>
+                        <td colspan="5" class="px-4 py-10 text-center text-zinc-600">
+                            No motorcycles yet. <a href="{{ route('admin.motorcycles.create') }}" class="text-amber-400 hover:text-amber-300">Add the first one.</a>
                         </td>
                     </tr>
                 @endforelse

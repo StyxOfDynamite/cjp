@@ -41,64 +41,85 @@
         ]);
     @endphp
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    {{-- Hero --}}
+    <div class="border-b border-white/10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <p class="text-xs font-medium uppercase tracking-widest text-amber-400 mb-4">About</p>
+            <h1 class="text-5xl sm:text-6xl font-bold tracking-tight text-white leading-none">
+                {{ config('seo.business_name') }}
+            </h1>
+            <p class="mt-4 text-zinc-400 text-lg">
+                {{ config('seo.address_city') }} &mdash; Quality Motorcycles
+            </p>
+        </div>
+    </div>
 
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">About {{ config('seo.business_name') }}</h1>
-        <p class="text-gray-600 text-lg mb-10">
-            We're a dedicated motorcycle dealership offering quality new and used bikes.
-            Whether you're a seasoned rider or just getting started, our team is here to help you find the perfect ride.
-        </p>
-
-        <div class="bg-gray-50 border-l-4 border-indigo-500 rounded-r-xl px-6 py-5 mb-10 text-gray-700 leading-relaxed space-y-2">
+    {{-- Story --}}
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="w-12 h-px bg-amber-500 mb-10"></div>
+        <blockquote class="text-4xl sm:text-5xl font-bold text-white tracking-tight leading-tight mb-12 max-w-3xl">
+            30 years in the trade.
+        </blockquote>
+        <div class="max-w-2xl space-y-5 text-zinc-300 text-lg leading-relaxed">
             <p>For the last 30 years I have been working at Ramoto Motorcycles in Bournemouth.</p>
             <p>Due to their closure I have started up on a smaller scale on my own.</p>
             <p>I will be supplying high quality low mileage motorcycles &amp; scooters.</p>
             <p>With my trade contacts I should be able to source most bikes &mdash; so give me a call and I'll try to find what you are looking for.</p>
         </div>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+    {{-- Info strip --}}
+    <div class="border-t border-white/10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
             <div>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">Visit Us</h2>
-                <address class="not-italic text-gray-600 leading-7">
+                <p class="text-xs font-medium uppercase tracking-widest text-zinc-500 mb-3">Find Us</p>
+                <address class="not-italic text-zinc-300 leading-7">
                     {{ config('seo.address_street') }}<br>
-                    {{ config('seo.address_city') }}, {{ config('seo.address_region') }} {{ config('seo.address_postcode') }}
+                    {{ config('seo.address_city') }}<br>
+                    {{ config('seo.address_region') }} {{ config('seo.address_postcode') }}
                 </address>
-
-                <h2 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Opening Hours</h2>
-                <ul class="text-gray-600 space-y-1">
+            </div>
+            <div>
+                <p class="text-xs font-medium uppercase tracking-widest text-zinc-500 mb-3">Opening Hours</p>
+                <ul class="text-zinc-300 space-y-1 leading-7">
                     @foreach(config('seo.opening_hours_display', []) as $line)
                         <li>{{ $line }}</li>
                     @endforeach
                 </ul>
             </div>
-
             <div>
-                <h2 class="text-xl font-semibold text-gray-800 mb-3">Get in Touch</h2>
-                <ul class="text-gray-600 space-y-2">
-                    <li>
-                        <span class="font-medium">Phone:</span>
-                        <a href="tel:{{ config('seo.phone') }}" class="text-indigo-600 hover:underline ml-1">{{ config('seo.phone') }}</a>
-                    </li>
-                    <li>
-                        <span class="font-medium">Email:</span>
-                        <a href="mailto:{{ config('seo.email') }}" class="text-indigo-600 hover:underline ml-1">{{ config('seo.email') }}</a>
-                    </li>
-                </ul>
+                <p class="text-xs font-medium uppercase tracking-widest text-zinc-500 mb-3">Get in Touch</p>
+                <div class="space-y-2">
+                    <div>
+                        <a href="tel:{{ config('seo.phone') }}" class="text-2xl font-bold text-amber-400 hover:text-amber-300 transition-colors tracking-tight">
+                            {{ config('seo.phone') }}
+                        </a>
+                    </div>
+                    <div>
+                        <a href="mailto:{{ config('seo.email') }}" class="text-zinc-300 hover:text-amber-400 transition-colors">
+                            {{ config('seo.email') }}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
-
-        {{-- Map --}}
-        <div class="rounded-xl overflow-hidden shadow-sm border border-gray-200 aspect-video">
-            <iframe
-                title="Map showing {{ config('seo.business_name') }} location"
-                width="100%"
-                height="100%"
-                style="border:0"
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-                src="https://maps.google.com/maps?q={{ urlencode($address) }}&output=embed">
-            </iframe>
-        </div>
-
     </div>
+
+    {{-- Map --}}
+    <div class="border-t border-white/10">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="aspect-video border border-white/10 overflow-hidden">
+                <iframe
+                    title="Map showing {{ config('seo.business_name') }} location"
+                    width="100%"
+                    height="100%"
+                    style="border:0;filter:invert(90%) hue-rotate(180deg)"
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                    src="https://maps.google.com/maps?q={{ urlencode($address) }}&output=embed">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
 </x-app-layout>

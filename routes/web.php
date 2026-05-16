@@ -11,7 +11,8 @@ use Spatie\Sitemap\Sitemap;
 use Spatie\Sitemap\Tags\Url;
 
 // Public
-Route::get('/', [PublicMotorcycleController::class, 'index'])->name('motorcycles.index');
+Route::get('/', [PublicMotorcycleController::class, 'home'])->name('home');
+Route::get('/motorcycles', [PublicMotorcycleController::class, 'index'])->name('motorcycles.index');
 Route::get('/motorcycles/{motorcycle:slug}', [PublicMotorcycleController::class, 'show'])->name('motorcycles.show');
 Route::view('/about', 'about')->name('about');
 Route::view('/contact', 'contact')->name('contact');
@@ -20,6 +21,7 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::get('/sitemap.xml', function () {
     $sitemap = Sitemap::create()
         ->add(Url::create('/')->setPriority(1.0)->setChangeFrequency('daily'))
+        ->add(Url::create('/motorcycles')->setPriority(0.9)->setChangeFrequency('daily'))
         ->add(Url::create('/about')->setPriority(0.6)->setChangeFrequency('monthly'))
         ->add(Url::create('/contact')->setPriority(0.6)->setChangeFrequency('monthly'));
 

@@ -21,11 +21,11 @@
 
 <nav class="glass-blur border-b border-white/10 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-18" style="height:4.5rem">
-        <a href="{{ route('motorcycles.index') }}" class="text-2xl font-extrabold tracking-tight text-white uppercase">
+        <a href="{{ route('home') }}" class="text-2xl font-extrabold tracking-tight text-white uppercase">
             {{ config('seo.business_name', config('app.name')) }}
         </a>
         <div class="hidden sm:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide">
-            <a href="{{ route('motorcycles.index') }}" class="{{ request()->routeIs('motorcycles.index') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">Motorcycles</a>
+            <a href="{{ route('motorcycles.index') }}" class="{{ request()->routeIs('motorcycles.*') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">Motorcycles</a>
             <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">About</a>
             <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors">Contact</a>
         </div>
@@ -69,6 +69,7 @@
             <h3 class="text-white font-semibold mb-2 tracking-tight">Quick Links</h3>
             <ul class="text-sm space-y-1">
                 <li><a href="{{ route('motorcycles.index') }}" class="hover:text-white transition-colors">Browse Motorcycles</a></li>
+                <li><a href="{{ route('home') }}" class="hover:text-white transition-colors">Home</a></li>
                 <li><a href="{{ route('about') }}" class="hover:text-white transition-colors">About Us</a></li>
                 <li><a href="{{ route('contact') }}" class="hover:text-white transition-colors">Contact</a></li>
                 <li><a href="{{ route('sitemap') }}" class="hover:text-white transition-colors">Sitemap</a></li>

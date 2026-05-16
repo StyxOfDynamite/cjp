@@ -7,6 +7,20 @@ use Illuminate\Http\Request;
 
 class PublicMotorcycleController extends Controller
 {
+    public function home()
+    {
+        $bikes = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
+            ->where('stock_quantity', '>', 0)
+            ->orderByDesc('is_featured')
+            ->orderByDesc('created_at')
+            ->limit(12)
+            ->get();
+
+        $inStockCount = Motorcycle::where('stock_quantity', '>', 0)->count();
+
+        return view('home', compact('bikes', 'inStockCount'));
+    }
+
     public function index(Request $request)
     {
         $filters = $request->only(['make', 'model', 'year_min', 'year_max', 'price_max', 'in_stock']);

@@ -21,7 +21,7 @@
 
 {{-- LocalBusiness JSON-LD on every page --}}
 <script type="application/ld+json">{!! json_encode([
-    '@context' => 'https://schema.org',
+    '@@context' => 'https://schema.org',
     '@type' => 'MotorcycleDealer',
     'name' => config('seo.business_name'),
     'url' => config('app.url'),

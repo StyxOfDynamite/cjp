@@ -325,7 +325,11 @@ class ScrapeCjpMotorcycles extends Command
                 $ext = pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
                 $path = 'motorcycles/' . $motorcycle->id . '/' . Str::uuid() . '.' . $ext;
 
-                Storage::disk(MotorcycleImage::disk())->put($path, $response->body(), 'public');
+                $mime = $response->header('Content-Type') ?: 'image/jpeg';
+                Storage::disk(MotorcycleImage::disk())->put($path, $response->body(), [
+                    'visibility'  => 'public',
+                    'ContentType' => $mime,
+                ]);
 
                 MotorcycleImage::create([
                     'motorcycle_id' => $motorcycle->id,

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Storage;
 
 class MotorcycleImage extends Model
 {
@@ -21,6 +22,13 @@ class MotorcycleImage extends Model
 
     public function getUrlAttribute(): string
     {
-        return asset('storage/' . $this->path);
+        return Storage::disk(self::disk())->url($this->path);
+    }
+
+    public static function disk(): string
+    {
+        // 'local' is private-only; map it to the public disk for local dev.
+        $disk = config('filesystems.default');
+        return $disk === 'local' ? 'public' : $disk;
     }
 }

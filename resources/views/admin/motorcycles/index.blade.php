@@ -47,7 +47,7 @@
             <a href="{{ route('admin.motorcycles.create') }}" class="text-amber-400 hover:text-amber-300">Add the first one.</a>
         </div>
     @else
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             @foreach($motorcycles as $bike)
                 @php $img = $bike->images->first(); @endphp
                 <div class="glass overflow-hidden"

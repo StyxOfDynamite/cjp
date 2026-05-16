@@ -11,7 +11,7 @@
 
 <div class="min-h-screen flex bg-zinc-900">
 
-    {{-- Mobile backdrop --}}
+    {{-- Backdrop --}}
     <div x-show="open"
          x-transition:enter="transition-opacity duration-200"
          x-transition:enter-start="opacity-0"
@@ -20,14 +20,14 @@
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          @click="open = false"
-         class="fixed inset-0 bg-black/60 z-20 lg:hidden"
+         class="fixed inset-0 bg-black/60 z-20"
          style="display:none">
     </div>
 
     {{-- Sidebar --}}
     <aside
         :class="open ? 'translate-x-0' : '-translate-x-full'"
-        class="fixed inset-y-0 left-0 z-30 w-72 bg-zinc-950 border-r border-white/10 flex flex-col transition-transform duration-200 lg:translate-x-0 lg:static lg:w-64 lg:flex-shrink-0"
+        class="fixed inset-y-0 left-0 z-30 w-72 bg-zinc-950 border-r border-white/10 flex flex-col transition-transform duration-200"
     >
         <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between">
             <div>
@@ -81,8 +81,8 @@
     {{-- Main --}}
     <div class="flex-1 flex flex-col overflow-hidden min-w-0">
         <header class="glass border-b border-white/10 px-4 sm:px-6 py-4 flex items-center gap-4">
-            {{-- Hamburger (mobile only) --}}
-            <button @click="open = true" class="lg:hidden text-zinc-400 hover:text-white transition-colors flex-shrink-0">
+            {{-- Hamburger --}}
+            <button @click="open = true" class="text-zinc-400 hover:text-white transition-colors flex-shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                 </svg>

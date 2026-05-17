@@ -24,29 +24,29 @@
     Skip to main content
 </a>
 
-<nav aria-label="Main navigation" class="bg-zinc-950 border-b border-white/10 sticky top-0 z-40">
+<nav aria-label="Main navigation" class="bg-white border-b border-zinc-200 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between" style="height:5rem">
-        <a href="{{ route('home') }}" class="text-2xl font-extrabold tracking-tight text-white uppercase" aria-label="{{ config('seo.business_name') }} — Home">
+        <a href="{{ route('home') }}" class="text-2xl font-extrabold tracking-tight text-zinc-900 uppercase" aria-label="{{ config('seo.business_name') }} — Home">
             {{ config('seo.business_name', config('app.name')) }}
         </a>
         <ul class="hidden sm:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide list-none" role="list">
             <li>
                 <a href="{{ route('motorcycles.index') }}"
-                   class="{{ request()->routeIs('motorcycles.*') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors"
+                   class="{{ request()->routeIs('motorcycles.*') ? 'text-amber-500' : 'text-zinc-600 hover:text-zinc-900' }} transition-colors"
                    @if(request()->routeIs('motorcycles.*')) aria-current="page" @endif>
                     Motorcycles
                 </a>
             </li>
             <li>
                 <a href="{{ route('about') }}"
-                   class="{{ request()->routeIs('about') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors"
+                   class="{{ request()->routeIs('about') ? 'text-amber-500' : 'text-zinc-600 hover:text-zinc-900' }} transition-colors"
                    @if(request()->routeIs('about')) aria-current="page" @endif>
                     About
                 </a>
             </li>
             <li>
                 <a href="{{ route('contact') }}"
-                   class="{{ request()->routeIs('contact') ? 'text-amber-400' : 'text-zinc-300 hover:text-white' }} transition-colors"
+                   class="{{ request()->routeIs('contact') ? 'text-amber-500' : 'text-zinc-600 hover:text-zinc-900' }} transition-colors"
                    @if(request()->routeIs('contact')) aria-current="page" @endif>
                     Contact
                 </a>
@@ -54,13 +54,13 @@
         </ul>
         <div class="flex items-center gap-4 text-sm font-semibold uppercase tracking-wide">
             @auth
-                <a href="{{ route('admin.motorcycles.index') }}" class="text-amber-400 hover:text-amber-300 transition-colors">Admin</a>
+                <a href="{{ route('admin.motorcycles.index') }}" class="text-amber-500 hover:text-amber-600 transition-colors">Admin</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="text-zinc-400 hover:text-zinc-200 transition-colors">Logout</button>
+                    <button type="submit" class="text-zinc-500 hover:text-zinc-800 transition-colors">Logout</button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="text-zinc-300 hover:text-white transition-colors">Staff Login</a>
+                <a href="{{ route('login') }}" class="text-zinc-600 hover:text-zinc-900 transition-colors">Staff Login</a>
             @endauth
         </div>
     </div>

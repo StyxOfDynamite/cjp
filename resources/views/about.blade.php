@@ -45,8 +45,10 @@
     <div class="border-b border-white/10">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <p class="text-xs font-medium uppercase tracking-widest text-amber-400 mb-8">About</p>
-            <h1 class="sr-only">{{ config('seo.business_name') }}</h1>
-            <img src="{{ config('seo.logo_light_url', config('seo.logo_url')) }}" alt="{{ config('seo.business_name') }}" class="h-32 w-auto mb-6">
+            <img src="{{ config('seo.logo_light_url', config('seo.logo_url')) }}" alt="{{ config('seo.business_name') }}" class="h-32 w-auto mb-4">
+            <h1 class="text-5xl sm:text-6xl font-bold tracking-tight text-white leading-none mb-4">
+                {{ config('seo.business_name') }}
+            </h1>
             <p class="text-zinc-400 text-lg">
                 {{ config('seo.address_city') }} &mdash; Quality Motorcycles
             </p>

@@ -14,6 +14,7 @@ return [
     'opening_hours_display' => ['Monday – Friday: 9am – 3pm', 'Saturday – Sunday: Closed'],
 
     'logo_url'        => env('SEO_LOGO_URL', 'https://fls-a1ca0e0c-a579-4763-8c09-2097012b214f.laravel.cloud/lolo.jpeg'),
+    'logo_light_url'  => env('SEO_LOGO_LIGHT_URL'),
     'geo_latitude'    => env('SEO_GEO_LATITUDE'),
     'geo_longitude'   => env('SEO_GEO_LONGITUDE'),
     'social_facebook' => env('SEO_FACEBOOK_URL'),

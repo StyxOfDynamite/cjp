@@ -29,12 +29,12 @@
         <a href="{{ route('home') }}" aria-label="{{ config('seo.business_name') }} — Home">
             <img src="{{ config('seo.logo_url') }}" alt="{{ config('seo.business_name') }}" class="h-14 w-auto">
         </a>
-        <ul class="hidden sm:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide list-none" role="list">
+        <ul class="flex items-center gap-5 sm:gap-8 text-sm font-semibold uppercase tracking-wide list-none" role="list">
             <li>
                 <a href="{{ route('motorcycles.index') }}"
                    class="{{ request()->routeIs('motorcycles.*') ? 'text-amber-500' : 'text-zinc-600 hover:text-zinc-900' }} transition-colors"
                    @if(request()->routeIs('motorcycles.*')) aria-current="page" @endif>
-                    Motorcycles
+                    Browse
                 </a>
             </li>
             <li>
@@ -52,17 +52,15 @@
                 </a>
             </li>
         </ul>
+        @auth
         <div class="flex items-center gap-4 text-sm font-semibold uppercase tracking-wide">
-            @auth
-                <a href="{{ route('admin.motorcycles.index') }}" class="text-amber-500 hover:text-amber-600 transition-colors">Admin</a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="text-zinc-500 hover:text-zinc-800 transition-colors">Logout</button>
-                </form>
-            @else
-                <a href="{{ route('login') }}" class="text-zinc-600 hover:text-zinc-900 transition-colors">Staff Login</a>
-            @endauth
+            <a href="{{ route('admin.motorcycles.index') }}" class="text-amber-500 hover:text-amber-600 transition-colors">Admin</a>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="text-zinc-500 hover:text-zinc-800 transition-colors">Logout</button>
+            </form>
         </div>
+        @endauth
     </div>
 </nav>
 
@@ -95,6 +93,9 @@
                 <li><a href="{{ route('about') }}" class="hover:text-white transition-colors">About Us</a></li>
                 <li><a href="{{ route('contact') }}" class="hover:text-white transition-colors">Contact</a></li>
                 <li><a href="{{ route('sitemap') }}" class="hover:text-white transition-colors">Sitemap</a></li>
+                @guest
+                <li><a href="{{ route('login') }}" class="hover:text-white transition-colors">Staff Login</a></li>
+                @endguest
             </ul>
         </nav>
     </div>

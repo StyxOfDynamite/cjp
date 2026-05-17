@@ -44,6 +44,7 @@
     {{-- Hero --}}
     <div class="border-b border-white/10">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <img src="{{ config('seo.logo_url') }}" alt="{{ config('seo.business_name') }}" class="h-32 w-auto mb-10">
             <p class="text-xs font-medium uppercase tracking-widest text-amber-400 mb-4">About</p>
             <h1 class="text-5xl sm:text-6xl font-bold tracking-tight text-white leading-none">
                 {{ config('seo.business_name') }}

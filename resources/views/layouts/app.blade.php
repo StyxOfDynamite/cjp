@@ -25,9 +25,9 @@
 </a>
 
 <nav aria-label="Main navigation" class="bg-zinc-950 border-b border-white/10 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-18" style="height:4.5rem">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between" style="height:5rem">
         <a href="{{ route('home') }}" aria-label="{{ config('seo.business_name') }} — Home">
-            <img src="{{ config('seo.logo_url') }}" alt="{{ config('seo.business_name') }}" class="h-10 w-auto">
+            <img src="{{ config('seo.logo_url') }}" alt="{{ config('seo.business_name') }}" class="h-16 w-auto">
         </a>
         <ul class="hidden sm:flex items-center gap-8 text-sm font-semibold uppercase tracking-wide list-none" role="list">
             <li>

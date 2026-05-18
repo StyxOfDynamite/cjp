@@ -149,11 +149,8 @@
                                     <img src="{{ $img->url }}" alt="{{ $img->alt_text }}"
                                         class="w-full aspect-square object-cover border border-white/10">
                                 @else
-                                    <x-image-processing
-                                        class="w-full aspect-square"
-                                        :poll-url="route('admin.image.status', $img)"
-                                        :alt="$img->alt_text"
-                                    />
+                                    <x-image-processing class="w-full aspect-square" :poll-url="route('admin.image.status', $img)"
+                                        :alt="$img->alt_text" />
                                 @endif
                                 @if ($img->is_primary)
                                     <span
@@ -176,7 +173,7 @@
                     </label>
                     <input type="file" name="images[]" multiple accept="image/*"
                         class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-amber-500 file:text-black hover:file:bg-amber-400 file:transition-colors">
-                    <p class="text-xs text-zinc-600 mt-1">Max 50MB per image. First image will be set as primary.</p>
+                    <p class="text-xs text-zinc-600 mt-1">Max 15MB per image. First image will be set as primary.</p>
                     @error('images.*')
                         <p class="text-xs text-red-400 mt-1">{{ $message }}</p>
                     @enderror

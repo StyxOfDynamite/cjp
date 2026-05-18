@@ -110,7 +110,7 @@ class MotorcycleController extends Controller
 
         $request->validate([
             'images.*' => [
-                File::image()->min('10kb')->max('50mb')
+                File::image()->min('10kb')->max('15mb')
             ]
         ]);
 

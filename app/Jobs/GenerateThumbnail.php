@@ -17,9 +17,6 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
     public int $tries = 2;
     public int $timeout = 120;
 
-    // Imagick overflows to disk rather than growing PHP's heap when it hits
-    // this cap. 64 MB is enough for thumbnails and small edits; large source
-    // files spill to /tmp automatically.
     private const IMAGICK_MEMORY_LIMIT = 64 * 1024 * 1024;
 
     public function __construct(public readonly MotorcycleImage $image) {}
@@ -41,13 +38,11 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
         $options = ['visibility' => 'public', 'ContentType' => 'image/webp', 'CacheControl' => 'max-age=31536000, immutable'];
         $storage = Storage::disk($disk);
 
-        \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MEMORY, self::IMAGICK_MEMORY_LIMIT);
-        \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MAP,    self::IMAGICK_MEMORY_LIMIT * 4);
-
         try {
+            \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MEMORY, self::IMAGICK_MEMORY_LIMIT);
+            \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MAP,    self::IMAGICK_MEMORY_LIMIT * 4);
+
             // Pass 1: convert source to full WebP, capped at 2000px.
-            // Raw bytes are streamed to a temp file so they never live in PHP's
-            // heap — Imagick reads from the path at the C level.
             if ($storage->exists($source)) {
                 $tmp = $this->streamToTemp($storage, $source);
 
@@ -68,7 +63,6 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
             }
 
             // Pass 2: thumbnail from the stored full WebP (now max 2000px).
-            // Heap from pass 1 is freed before this decode starts.
             $tmp = $this->streamToTemp($storage, $this->image->path);
 
             try {
@@ -86,15 +80,15 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 
             $this->image->update(['has_thumbnail' => true]);
         } catch (\Throwable $e) {
-            Log::warning("Thumbnail generation failed for image {$this->image->id}: {$e->getMessage()}", [
-                'file' => $e->getFile() . ':' . $e->getLine(),
+            Log::error("Thumbnail generation failed for image {$this->image->id}: {$e->getMessage()}", [
+                'file'  => $e->getFile() . ':' . $e->getLine(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
+            throw $e;
         }
     }
 
-    // Copies a storage file into a local temp file via a stream, so the full
-    // contents are never materialised as a PHP string on the heap.
     private function streamToTemp(Filesystem $storage, string $path): string
     {
         $tmp = tempnam(sys_get_temp_dir(), 'img_');

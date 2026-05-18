@@ -53,10 +53,9 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 
                 try {
                     $imagick = new \Imagick($tmp);
-                    $imagick->scaleImage(2000, 0, true);
+                    $imagick->thumbnailImage(2000, 0);
                     $imagick->setImageFormat('webp');
                     $imagick->setImageCompressionQuality(85);
-                    $imagick->stripImage();
                     $storage->put($this->image->path, $imagick->getImageBlob(), $options);
                     $imagick->destroy();
                 } finally {
@@ -74,7 +73,7 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 
             try {
                 $imagick = new \Imagick($tmp);
-                $imagick->scaleImage(600, 0, true);
+                $imagick->thumbnailImage(600, 0);
                 $imagick->setImageFormat('webp');
                 $imagick->setImageCompressionQuality(80);
                 $storage->put($thumb, $imagick->getImageBlob(), $options);

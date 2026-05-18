@@ -39,6 +39,8 @@ Route::get('/sitemap.xml', function () {
     return response($sitemap->render(), 200, ['Content-Type' => 'application/xml']);
 })->name('sitemap');
 
+Route::get('/images/{image}/status', [ThumbnailController::class, 'status'])->name('images.status');
+
 // Auth profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', fn () => redirect()->route('admin.motorcycles.index'))->name('dashboard');

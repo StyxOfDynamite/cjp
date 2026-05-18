@@ -5,9 +5,10 @@
         $canonical = route('home');
     @endphp
 
-    @if($bikes->isNotEmpty())
+    @php $firstImage = $bikes->first()?->images->first(); @endphp
+    @if($firstImage?->has_thumbnail)
         @push('head')
-            <link rel="preload" as="image" href="{{ $bikes->first()->images->first()?->url }}">
+            <link rel="preload" as="image" href="{{ $firstImage->url }}">
         @endpush
     @endif
 
@@ -46,7 +47,7 @@
                 style="display:none"
             >
                 {{-- Background image --}}
-                @if($img)
+                @if($img && $img->has_thumbnail)
                     <img src="{{ $img->url }}"
                          alt="{{ $bike->year }} {{ $bike->make }} {{ $bike->model }}"
                          loading="{{ $i === 0 ? 'eager' : 'lazy' }}"

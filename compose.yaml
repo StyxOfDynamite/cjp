@@ -25,7 +25,6 @@ services:
             - mysql
             - redis
             - mailpit
-            - minio
     mysql:
         image: 'mysql:8.4'
         ports:
@@ -73,27 +72,24 @@ services:
             - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
         networks:
             - sail
-    minio:
-        image: 'minio/minio:latest'
-        ports:
-            - '${FORWARD_MINIO_PORT:-9000}:9000'
-            - '${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900'
+    worker:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.4
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.4/app
         environment:
-            MINIO_ROOT_USER: sail
-            MINIO_ROOT_PASSWORD: password
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
         volumes:
-            - 'sail-minio:/data'
+            - '.:/var/www/html'
         networks:
             - sail
-        command: 'minio server /data --console-address ":8900"'
-        healthcheck:
-            test:
-                - CMD
-                - mc
-                - ready
-                - local
-            retries: 3
-            timeout: 5s
+        depends_on:
+            - mysql
+            - redis
+        command: 'php artisan queue:work --sleep=3 --tries=3 --timeout=120'
 networks:
     sail:
         driver: bridge
@@ -101,6 +97,4 @@ volumes:
     sail-mysql:
         driver: local
     sail-redis:
-        driver: local
-    sail-minio:
         driver: local

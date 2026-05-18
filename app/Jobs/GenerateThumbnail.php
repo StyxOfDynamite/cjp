@@ -32,22 +32,25 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
             return;
         }
 
-        $disk  = MotorcycleImage::disk();
-        $thumb = preg_replace('/\.webp$/', '_thumb.webp', $this->image->path);
+        $disk    = MotorcycleImage::disk();
+        $source  = preg_replace('/\.webp$/', '.source', $this->image->path);
+        $thumb   = preg_replace('/\.webp$/', '_thumb.webp', $this->image->path);
+        $options = ['visibility' => 'public', 'ContentType' => 'image/webp', 'CacheControl' => 'max-age=31536000, immutable'];
 
         try {
-            $content = Storage::disk($disk)->get($this->image->path);
+            $storage = Storage::disk($disk);
+            $content = $storage->exists($source)
+                ? $storage->get($source)
+                : $storage->get($this->image->path);
 
-            $webp = (new ImageManager(new GdDriver()))
-                ->decodeBinary($content)
-                ->scaleDown(width: 600)
-                ->encode(new WebpEncoder(80));
+            $img = (new ImageManager(new GdDriver()))->decodeBinary($content);
 
-            Storage::disk($disk)->put($thumb, (string) $webp, [
-                'visibility'   => 'public',
-                'ContentType'  => 'image/webp',
-                'CacheControl' => 'max-age=31536000, immutable',
-            ]);
+            if ($storage->exists($source)) {
+                $storage->put($this->image->path, (string) $img->encode(new WebpEncoder(85)), $options);
+                $storage->delete($source);
+            }
+
+            $storage->put($thumb, (string) $img->scaleDown(width: 600)->encode(new WebpEncoder(80)), $options);
 
             $this->image->update(['has_thumbnail' => true]);
         } catch (\Throwable $e) {

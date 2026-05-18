@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\GenerateThumbnail;
 use App\Models\Motorcycle;
 use App\Models\MotorcycleImage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\File;
 use Illuminate\View\View;
-use Intervention\Image\Drivers\Gd\Driver as GdDriver;
-use Intervention\Image\Drivers\Gd\Encoders\WebpEncoder;
-use Intervention\Image\ImageManager;
 
 class MotorcycleController extends Controller
 {
@@ -20,7 +19,7 @@ class MotorcycleController extends Controller
     {
         $filters = $request->only(['search', 'year_min', 'year_max', 'price_min', 'price_max', 'in_stock']);
 
-        $motorcycles = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
+        $motorcycles = Motorcycle::with(['images' => fn($q) => $q->where('is_primary', true)])
             ->filter($filters)
             ->orderByDesc('created_at')
             ->paginate(20)
@@ -109,28 +108,31 @@ class MotorcycleController extends Controller
             return;
         }
 
-        $request->validate(['images.*' => 'image|max:5120']);
+        $request->validate([
+            'images.*' => [
+                File::image()->min('10kb')->max('50mb')
+            ]
+        ]);
 
-        $disk = MotorcycleImage::disk();
+        $disk    = MotorcycleImage::disk();
         $isFirst = $motorcycle->images()->count() === 0;
-        $manager = new ImageManager(new GdDriver());
 
         foreach ($request->file('images') as $i => $file) {
-            $content = $file->getContent();
-            $uuid    = Str::uuid();
-            $path    = "motorcycles/{$motorcycle->id}/{$uuid}.webp";
-            $thumb   = "motorcycles/{$motorcycle->id}/{$uuid}_thumb.webp";
-            $options = ['visibility' => 'public', 'ContentType' => 'image/webp', 'CacheControl' => 'max-age=31536000, immutable'];
+            $uuid   = Str::uuid();
+            $path   = "motorcycles/{$motorcycle->id}/{$uuid}.webp";
+            $source = "motorcycles/{$motorcycle->id}/{$uuid}.source";
 
-            Storage::disk($disk)->put($path,  (string) $manager->decodeBinary($content)->encode(new WebpEncoder(85)), $options);
-            Storage::disk($disk)->put($thumb, (string) $manager->decodeBinary($content)->scaleDown(width: 600)->encode(new WebpEncoder(80)), $options);
-            $motorcycle->images()->create([
+            Storage::disk($disk)->put($source, $file->getContent(), ['visibility' => 'public']);
+
+            $image = $motorcycle->images()->create([
                 'path'          => $path,
                 'alt_text'      => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
                 'sort_order'    => $motorcycle->images()->count() + $i,
                 'is_primary'    => $isFirst && $i === 0,
-                'has_thumbnail' => true,
+                'has_thumbnail' => false,
             ]);
+
+            GenerateThumbnail::dispatch($image);
         }
     }
 

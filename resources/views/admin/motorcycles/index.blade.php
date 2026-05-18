@@ -56,10 +56,16 @@
 
                     {{-- Image --}}
                     <div class="relative aspect-video bg-zinc-900">
-                        @if($img)
+                        @if($img && $img->has_thumbnail)
                             <img src="{{ route('admin.image.thumbnail', $img) }}" alt="{{ $img->alt_text }}"
                                  loading="lazy"
                                  class="w-full h-full object-cover opacity-90">
+                        @elseif($img)
+                            <x-image-processing
+                                class="w-full h-full"
+                                :poll-url="route('admin.image.status', $img)"
+                                :alt="$img->alt_text"
+                            />
                         @else
                             <div class="w-full h-full flex items-center justify-center text-zinc-700">
                                 <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">

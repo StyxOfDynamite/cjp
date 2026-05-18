@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\MotorcycleImage;
-use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -42,53 +41,35 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 
         try {
             // Pass 1: convert source file to full WebP, capped at 2000px.
-            // Raw bytes are streamed to a temp file rather than held in a PHP string,
-            // so GD never has to share heap with the encoded source simultaneously.
+            // decodeStream() feeds raw bytes directly to GD without buffering
+            // them as a PHP string, keeping the heap footprint low.
             if ($storage->exists($source)) {
-                $tmp = $this->streamToTemp($storage, $source);
+                $stream = $storage->readStream($source);
+                $img    = $manager->decodeStream($stream);
+                fclose($stream);
 
-                try {
-                    $img = $manager->read($tmp);
-                    $img->scaleDown(width: 2000);
-                    $storage->put($this->image->path, (string) $img->encode(new WebpEncoder(85)), $options);
-                } finally {
-                    unset($img);
-                    gc_collect_cycles();
-                    @unlink($tmp);
-                }
+                $img->scaleDown(width: 2000);
+                $storage->put($this->image->path, (string) $img->encode(new WebpEncoder(85)), $options);
+
+                // Free the decoded bitmap before starting the thumbnail pass.
+                unset($img);
+                gc_collect_cycles();
 
                 $storage->delete($source);
             }
 
-            // Pass 2: thumbnail from the stored full WebP (now max 2000px wide).
-            // Memory is fully released from pass 1 before this decode starts.
-            $tmp = $this->streamToTemp($storage, $this->image->path);
+            // Pass 2: thumbnail from the stored full WebP (now max 2000px).
+            // Memory from pass 1 is fully released before this decode begins.
+            $stream    = $storage->readStream($this->image->path);
+            $thumbnail = $manager->decodeStream($stream)->scaleDown(width: 600)->encode(new WebpEncoder(80));
+            fclose($stream);
 
-            try {
-                $thumbnail = $manager->read($tmp)->scaleDown(width: 600)->encode(new WebpEncoder(80));
-                $storage->put($thumb, (string) $thumbnail, $options);
-            } finally {
-                unset($thumbnail);
-                @unlink($tmp);
-            }
+            $storage->put($thumb, (string) $thumbnail, $options);
+            unset($thumbnail);
 
             $this->image->update(['has_thumbnail' => true]);
         } catch (\Throwable $e) {
             Log::warning("Thumbnail generation failed for image {$this->image->id}: {$e->getMessage()}");
         }
-    }
-
-    // Streams a storage file into a local temp file in chunks — avoids loading
-    // the entire file as a PHP string before GD can begin decoding.
-    private function streamToTemp(Filesystem $storage, string $path): string
-    {
-        $tmp = tempnam(sys_get_temp_dir(), 'img_');
-        $src = $storage->readStream($path);
-        $dst = fopen($tmp, 'wb');
-        stream_copy_to_stream($src, $dst);
-        fclose($dst);
-        fclose($src);
-
-        return $tmp;
     }
 }

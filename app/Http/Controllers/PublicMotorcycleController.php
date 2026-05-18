@@ -9,10 +9,11 @@ class PublicMotorcycleController extends Controller
 {
     public function home()
     {
-        $bikes = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
+        $bikes = Motorcycle::with(['images' => fn($q) => $q->where('is_primary', true)])
             ->where('stock_quantity', '>', 0)
             ->orderByDesc('is_featured')
-            ->orderByDesc('created_at')
+            ->orderBy('stock_quantity')
+            ->orderBy('make')
             ->limit(12)
             ->get();
 
@@ -25,10 +26,11 @@ class PublicMotorcycleController extends Controller
     {
         $filters = $request->only(['make', 'model', 'year_min', 'year_max', 'price_max', 'in_stock']);
 
-        $motorcycles = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
+        $motorcycles = Motorcycle::with(['images' => fn($q) => $q->where('is_primary', true)])
             ->filter($filters)
             ->orderByDesc('is_featured')
-            ->orderByDesc('created_at')
+            ->orderBy('stock_quantity')
+            ->orderBy('make')
             ->paginate(12)
             ->withQueryString();
 

@@ -86,7 +86,10 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 
             $this->image->update(['has_thumbnail' => true]);
         } catch (\Throwable $e) {
-            Log::warning("Thumbnail generation failed for image {$this->image->id}: {$e->getMessage()}");
+            Log::warning("Thumbnail generation failed for image {$this->image->id}: {$e->getMessage()}", [
+                'file' => $e->getFile() . ':' . $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 

@@ -3,14 +3,12 @@
 namespace App\Jobs;
 
 use App\Models\MotorcycleImage;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Gd\Driver as GdDriver;
-use Intervention\Image\Drivers\Gd\Encoders\WebpEncoder;
-use Intervention\Image\ImageManager;
 
 class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 {
@@ -18,6 +16,11 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
 
     public int $tries = 2;
     public int $timeout = 120;
+
+    // Imagick overflows to disk rather than growing PHP's heap when it hits
+    // this cap. 64 MB is enough for thumbnails and small edits; large source
+    // files spill to /tmp automatically.
+    private const IMAGICK_MEMORY_LIMIT = 64 * 1024 * 1024;
 
     public function __construct(public readonly MotorcycleImage $image) {}
 
@@ -37,39 +40,68 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
         $thumb   = preg_replace('/\.webp$/', '_thumb.webp', $this->image->path);
         $options = ['visibility' => 'public', 'ContentType' => 'image/webp', 'CacheControl' => 'max-age=31536000, immutable'];
         $storage = Storage::disk($disk);
-        $manager = new ImageManager(new GdDriver());
+
+        \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MEMORY, self::IMAGICK_MEMORY_LIMIT);
+        \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MAP,    self::IMAGICK_MEMORY_LIMIT * 4);
 
         try {
-            // Pass 1: convert source file to full WebP, capped at 2000px.
-            // decodeStream() feeds raw bytes directly to GD without buffering
-            // them as a PHP string, keeping the heap footprint low.
+            // Pass 1: convert source to full WebP, capped at 2000px.
+            // Raw bytes are streamed to a temp file so they never live in PHP's
+            // heap — Imagick reads from the path at the C level.
             if ($storage->exists($source)) {
-                $stream = $storage->readStream($source);
-                $img    = $manager->decodeStream($stream);
-                fclose($stream);
+                $tmp = $this->streamToTemp($storage, $source);
 
-                $img->scaleDown(width: 2000);
-                $storage->put($this->image->path, (string) $img->encode(new WebpEncoder(85)), $options);
+                try {
+                    $imagick = new \Imagick($tmp);
+                    $imagick->scaleImage(2000, 0, true);
+                    $imagick->setImageFormat('webp');
+                    $imagick->setImageCompressionQuality(85);
+                    $imagick->stripImage();
+                    $storage->put($this->image->path, $imagick->getImageBlob(), $options);
+                    $imagick->destroy();
+                } finally {
+                    @unlink($tmp);
+                }
 
-                // Free the decoded bitmap before starting the thumbnail pass.
-                unset($img);
+                unset($imagick);
                 gc_collect_cycles();
-
                 $storage->delete($source);
             }
 
             // Pass 2: thumbnail from the stored full WebP (now max 2000px).
-            // Memory from pass 1 is fully released before this decode begins.
-            $stream    = $storage->readStream($this->image->path);
-            $thumbnail = $manager->decodeStream($stream)->scaleDown(width: 600)->encode(new WebpEncoder(80));
-            fclose($stream);
+            // Heap from pass 1 is freed before this decode starts.
+            $tmp = $this->streamToTemp($storage, $this->image->path);
 
-            $storage->put($thumb, (string) $thumbnail, $options);
-            unset($thumbnail);
+            try {
+                $imagick = new \Imagick($tmp);
+                $imagick->scaleImage(600, 0, true);
+                $imagick->setImageFormat('webp');
+                $imagick->setImageCompressionQuality(80);
+                $storage->put($thumb, $imagick->getImageBlob(), $options);
+                $imagick->destroy();
+            } finally {
+                @unlink($tmp);
+            }
+
+            unset($imagick);
 
             $this->image->update(['has_thumbnail' => true]);
         } catch (\Throwable $e) {
             Log::warning("Thumbnail generation failed for image {$this->image->id}: {$e->getMessage()}");
         }
+    }
+
+    // Copies a storage file into a local temp file via a stream, so the full
+    // contents are never materialised as a PHP string on the heap.
+    private function streamToTemp(Filesystem $storage, string $path): string
+    {
+        $tmp = tempnam(sys_get_temp_dir(), 'img_');
+        $src = $storage->readStream($path);
+        $dst = fopen($tmp, 'wb');
+        stream_copy_to_stream($src, $dst);
+        fclose($dst);
+        fclose($src);
+
+        return $tmp;
     }
 }

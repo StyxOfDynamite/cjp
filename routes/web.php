@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\MotorcycleController as AdminMotorcycleController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\ThumbnailController;
@@ -62,6 +63,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/motorcycles/{motorcycle}/stock', [StockController::class, 'update'])->name('motorcycles.stock');
 
     Route::get('/image/{image}/thumb', [ThumbnailController::class, 'show'])->name('image.thumbnail');
+
+    Route::get('/about', [AboutController::class, 'edit'])->name('about.edit');
+    Route::put('/about', [AboutController::class, 'update'])->name('about.update');
 });
 
 require __DIR__.'/auth.php';

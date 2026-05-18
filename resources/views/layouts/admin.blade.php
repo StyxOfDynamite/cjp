@@ -61,6 +61,18 @@
                 </svg>
                 Add New
             </a>
+
+            <div class="pt-4 pb-1">
+                <p class="px-3 text-xs font-semibold uppercase tracking-widest text-zinc-600">Content</p>
+            </div>
+            <a href="{{ route('admin.about.edit') }}"
+               @click="open = false"
+               class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors {{ request()->routeIs('admin.about.edit') ? 'bg-white/10 text-amber-400' : 'text-zinc-400 hover:bg-white/5 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                About Page
+            </a>
         </nav>
 
         <div class="px-4 py-4 border-t border-white/10">

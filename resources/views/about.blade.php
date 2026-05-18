@@ -56,16 +56,22 @@
     </div>
 
     {{-- Story --}}
+    @php
+        $aboutContent = \App\Models\Setting::get('about', [
+            'tagline' => '30 years in the trade.',
+            'body'    => "For the last 30 years I have been working at Ramoto Motorcycles in Bournemouth.\n\nDue to their closure I have started up on a smaller scale on my own.\n\nI will be supplying high quality low mileage motorcycles & scooters.\n\nWith my trade contacts I should be able to source most bikes — so give me a call and I'll try to find what you are looking for.",
+        ]);
+        $aboutParagraphs = array_filter(explode("\n\n", $aboutContent['body'] ?? ''));
+    @endphp
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="w-12 h-px bg-amber-500 mb-10"></div>
         <blockquote class="text-4xl sm:text-5xl font-bold text-white tracking-tight leading-tight mb-12 max-w-3xl">
-            30 years in the trade.
+            {{ $aboutContent['tagline'] ?? '' }}
         </blockquote>
         <div class="max-w-2xl space-y-5 text-zinc-300 text-lg leading-relaxed">
-            <p>For the last 30 years I have been working at Ramoto Motorcycles in Bournemouth.</p>
-            <p>Due to their closure I have started up on a smaller scale on my own.</p>
-            <p>I will be supplying high quality low mileage motorcycles &amp; scooters.</p>
-            <p>With my trade contacts I should be able to source most bikes &mdash; so give me a call and I'll try to find what you are looking for.</p>
+            @foreach($aboutParagraphs as $paragraph)
+                <p>{{ $paragraph }}</p>
+            @endforeach
         </div>
     </div>
 

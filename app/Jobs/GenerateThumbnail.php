@@ -42,41 +42,31 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
             \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MEMORY, self::IMAGICK_MEMORY_LIMIT);
             \Imagick::setResourceLimit(\Imagick::RESOURCETYPE_MAP,    self::IMAGICK_MEMORY_LIMIT * 4);
 
-            // Pass 1: convert source to full WebP, capped at 2000px.
-            if ($storage->exists($source)) {
-                $tmp = $this->streamToTemp($storage, $source);
-
-                try {
-                    $imagick = new \Imagick($tmp);
-                    $imagick->thumbnailImage(2000, 0);
-                    $imagick->setImageFormat('webp');
-                    $imagick->setImageCompressionQuality(85);
-                    $storage->put($this->image->path, $imagick->getImageBlob(), $options);
-                    $imagick->destroy();
-                } finally {
-                    @unlink($tmp);
-                }
-
-                unset($imagick);
-                gc_collect_cycles();
-                $storage->delete($source);
-            }
-
-            // Pass 2: thumbnail from the stored full WebP (now max 2000px).
-            $tmp = $this->streamToTemp($storage, $this->image->path);
+            $readPath = $storage->exists($source) ? $source : $this->image->path;
+            $tmp      = $this->streamToTemp($storage, $readPath);
 
             try {
                 $imagick = new \Imagick($tmp);
-                $imagick->thumbnailImage(600, 0);
+
+                // Scale to full-size WebP (2000px wide max), store if from source
+                $imagick->thumbnailImage(2000, 0);
                 $imagick->setImageFormat('webp');
+                $imagick->setImageCompressionQuality(85);
+
+                if ($storage->exists($source)) {
+                    $storage->put($this->image->path, $imagick->getImageBlob(), $options);
+                    $storage->delete($source);
+                }
+
+                // Scale down further in-place for the thumbnail
+                $imagick->thumbnailImage(600, 0);
                 $imagick->setImageCompressionQuality(80);
                 $storage->put($thumb, $imagick->getImageBlob(), $options);
+
                 $imagick->destroy();
             } finally {
                 @unlink($tmp);
             }
-
-            unset($imagick);
 
             $this->image->update(['has_thumbnail' => true]);
         } catch (\Throwable $e) {

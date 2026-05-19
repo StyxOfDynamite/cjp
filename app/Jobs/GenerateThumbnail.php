@@ -15,7 +15,7 @@ class GenerateThumbnail implements ShouldQueue, ShouldBeUnique
     use Queueable;
 
     public int $tries = 2;
-    public int $timeout = 120;
+    public int $timeout = 300;
 
     private const IMAGICK_MEMORY_LIMIT = 64 * 1024 * 1024;
 

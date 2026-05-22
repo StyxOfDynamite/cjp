@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ContactEnquiry;
+use App\Models\Enquiry;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
@@ -32,12 +31,12 @@ class ContactController extends Controller
                 ->withInput();
         }
 
-        Mail::to(config('seo.email'))->send(new ContactEnquiry(
-            senderName:     $data['name'],
-            senderEmail:    $data['email'],
-            senderPhone:    $data['phone'] ?? null,
-            enquiryMessage: $data['message'],
-        ));
+        Enquiry::create([
+            'name'    => $data['name'],
+            'email'   => $data['email'],
+            'phone'   => $data['phone'] ?? null,
+            'message' => $data['message'],
+        ]);
 
         return redirect()->route('contact')->with('success', "Thanks for getting in touch! We'll get back to you soon.");
     }

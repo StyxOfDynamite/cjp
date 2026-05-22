@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AboutController;
+use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\MotorcycleController as AdminMotorcycleController;
 use App\Http\Controllers\Admin\StockController;
 use App\Http\Controllers\Admin\ThumbnailController;
@@ -63,6 +64,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/motorcycles/{motorcycle}/stock', [StockController::class, 'update'])->name('motorcycles.stock');
 
     Route::get('/image/{image}/thumb', [ThumbnailController::class, 'show'])->name('image.thumbnail');
+
+    Route::get('/enquiries', [EnquiryController::class, 'index'])->name('enquiries.index');
+    Route::get('/enquiries/{enquiry}', [EnquiryController::class, 'show'])->name('enquiries.show');
+    Route::patch('/enquiries/{enquiry}/read', [EnquiryController::class, 'markRead'])->name('enquiries.read');
+    Route::patch('/enquiries/{enquiry}/unread', [EnquiryController::class, 'markUnread'])->name('enquiries.unread');
 
     Route::get('/about', [AboutController::class, 'edit'])->name('about.edit');
     Route::put('/about', [AboutController::class, 'update'])->name('about.update');

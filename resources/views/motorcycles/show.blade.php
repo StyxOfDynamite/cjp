@@ -111,19 +111,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                                 </svg>
                             </button>
-                            <template x-if="images[active].ready">
-                                <img :src="images[active].url" :alt="images[active].alt"
-                                     class="max-h-[90vh] max-w-[90vw] object-contain select-none">
-                            </template>
-                            <template x-if="!images[active].ready">
-                                <div class="flex flex-col items-center justify-center gap-2">
-                                    <svg class="w-8 h-8 text-zinc-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                                    </svg>
-                                    <span class="text-sm text-zinc-600">Processing</span>
-                                </div>
-                            </template>
+                            <img :src="images[active].url" :alt="images[active].alt"
+                                 class="max-h-[90vh] max-w-[90vw] object-contain select-none">
                             <button x-on:click="next()"
                                     class="absolute right-4 p-2 text-white/60 hover:text-white transition-colors">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">

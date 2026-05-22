@@ -39,8 +39,6 @@ Route::get('/sitemap.xml', function () {
     return response($sitemap->render(), 200, ['Content-Type' => 'application/xml']);
 })->name('sitemap');
 
-Route::get('/images/{image}/status', [ThumbnailController::class, 'status'])->name('images.status');
-
 // Auth profile routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', fn () => redirect()->route('admin.motorcycles.index'))->name('dashboard');
@@ -65,7 +63,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('/motorcycles/{motorcycle}/stock', [StockController::class, 'update'])->name('motorcycles.stock');
 
     Route::get('/image/{image}/thumb', [ThumbnailController::class, 'show'])->name('image.thumbnail');
-    Route::get('/image/{image}/status', [ThumbnailController::class, 'status'])->name('image.status');
 
     Route::get('/about', [AboutController::class, 'edit'])->name('about.edit');
     Route::put('/about', [AboutController::class, 'update'])->name('about.update');

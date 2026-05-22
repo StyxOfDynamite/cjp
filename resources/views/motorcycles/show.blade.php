@@ -56,26 +56,14 @@
             <div
                 x-data="{
                     images: @js($motorcycle->images->map(fn ($i) => [
-                        'url'       => $i->url,
-                        'alt'       => $i->alt_text ?? '',
-                        'ready'     => $i->has_thumbnail,
-                        'statusUrl' => $i->has_thumbnail ? null : route('images.status', $i),
+                        'url' => $i->thumbnail_url,
+                        'alt' => $i->alt_text ?? '',
                     ])->values()),
                     active: 0,
                     open: false,
                     prev() { this.active = this.active > 0 ? this.active - 1 : this.images.length - 1 },
                     next() { this.active = this.active < this.images.length - 1 ? this.active + 1 : 0 },
-                    pollImage(i) {
-                        if (!this.images[i]?.statusUrl) return;
-                        fetch(this.images[i].statusUrl)
-                            .then(r => r.json())
-                            .then(d => {
-                                if (d.ready) { this.images[i].url = d.url; this.images[i].ready = true; }
-                                else { setTimeout(() => this.pollImage(i), 2000); }
-                            });
-                    },
                 }"
-                x-init="images.forEach((img, i) => { if (!img.ready) pollImage(i); })"
                 x-effect="document.body.style.overflow = open ? 'hidden' : ''"
                 x-on:keydown.escape.window="open = false"
                 x-on:keydown.arrow-left.window="if (open) prev()"
@@ -85,18 +73,7 @@
                     <div class="glass overflow-hidden aspect-video mb-3"
                          :class="images.length > 1 ? 'cursor-zoom-in' : ''"
                          x-on:click="if (images.length > 1) open = true">
-                        <template x-if="images[active].ready">
-                            <img :src="images[active].url" :alt="images[active].alt" class="w-full h-full object-cover">
-                        </template>
-                        <template x-if="!images[active].ready">
-                            <div class="w-full h-full flex flex-col items-center justify-center gap-2 bg-zinc-900">
-                                <svg class="w-5 h-5 text-zinc-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                                </svg>
-                                <span class="text-xs text-zinc-600">Processing</span>
-                            </div>
-                        </template>
+                        <img :src="images[active].url" :alt="images[active].alt" class="w-full h-full object-cover">
                     </div>
 
                     @if($motorcycle->images->count() > 1)
@@ -105,17 +82,7 @@
                                 <button x-on:click="active = i"
                                         :class="active === i ? 'ring-amber-400 ring-2' : 'ring-white/10 ring-1 hover:ring-amber-400/50'"
                                         class="aspect-square overflow-hidden bg-zinc-900 focus:outline-none transition-all">
-                                    <template x-if="img.ready">
-                                        <img :src="img.url" :alt="img.alt" loading="lazy" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
-                                    </template>
-                                    <template x-if="!img.ready">
-                                        <div class="w-full h-full flex items-center justify-center bg-zinc-900">
-                                            <svg class="w-4 h-4 text-zinc-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                                            </svg>
-                                        </div>
-                                    </template>
+                                    <img :src="img.url" :alt="img.alt" loading="lazy" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity">
                                 </button>
                             </template>
                         </div>

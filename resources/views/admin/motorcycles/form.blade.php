@@ -145,13 +145,8 @@
                     <div class="grid grid-cols-4 gap-3">
                         @foreach ($motorcycle->images as $img)
                             <div class="relative group">
-                                @if ($img->has_thumbnail)
-                                    <img src="{{ $img->url }}" alt="{{ $img->alt_text }}"
-                                        class="w-full aspect-square object-cover border border-white/10">
-                                @else
-                                    <x-image-processing class="w-full aspect-square" :poll-url="route('admin.image.status', $img)"
-                                        :alt="$img->alt_text" />
-                                @endif
+                                <img src="{{ $img->thumbnail_url }}" alt="{{ $img->alt_text }}"
+                                    class="w-full aspect-square object-cover border border-white/10">
                                 @if ($img->is_primary)
                                     <span
                                         class="absolute top-1 left-1 text-xs bg-amber-500 text-black px-1.5 py-0.5 font-semibold">Primary</span>

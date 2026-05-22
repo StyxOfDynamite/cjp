@@ -90,18 +90,12 @@
                             @endif
                             <a href="{{ route('motorcycles.show', $bike) }}" class="group glass overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-200">
                                 <div class="aspect-video bg-zinc-900 overflow-hidden">
-                                    @if($primary && $primary->has_thumbnail)
+                                    @if($primary)
                                         <img src="{{ $loop->first ? $primary->url : $primary->thumbnail_url }}" alt="{{ $primary->alt_text ?? $bike->year . ' ' . $bike->make . ' ' . $bike->model }}"
                                              loading="{{ $loop->index < 3 ? 'eager' : 'lazy' }}"
                                              fetchpriority="{{ $loop->first ? 'high' : 'auto' }}"
                                              decoding="{{ $loop->first ? 'sync' : 'async' }}"
                                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90 group-hover:opacity-100">
-                                    @elseif($primary)
-                                        <x-image-processing
-                                            class="w-full h-full"
-                                            :poll-url="route('images.status', $primary)"
-                                            :alt="$primary->alt_text ?? ''"
-                                        />
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-zinc-700">
                                             <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>

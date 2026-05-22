@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Jobs\GenerateThumbnail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
@@ -32,7 +31,6 @@ class MotorcycleImage extends Model
     public function getThumbnailUrlAttribute(): string
     {
         if (! $this->has_thumbnail) {
-            GenerateThumbnail::dispatch($this);
             return $this->url;
         }
 

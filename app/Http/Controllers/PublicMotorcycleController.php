@@ -12,7 +12,7 @@ class PublicMotorcycleController extends Controller
         $bikes = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
             ->where('stock_quantity', '>', 0)
             ->orderByDesc('is_featured')
-            ->orderByDesc('created_at')
+            ->orderBy('make')
             ->limit(12)
             ->get();
 
@@ -28,7 +28,7 @@ class PublicMotorcycleController extends Controller
         $motorcycles = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
             ->filter($filters)
             ->orderByDesc('is_featured')
-            ->orderByDesc('created_at')
+            ->orderBy('make')
             ->paginate(12)
             ->withQueryString();
 

@@ -28,6 +28,14 @@ Route::get('/sitemap.xml', function () {
         ->add(Url::create('/about')->setPriority(0.6)->setChangeFrequency('monthly'))
         ->add(Url::create('/contact')->setPriority(0.6)->setChangeFrequency('monthly'));
 
+    Motorcycle::distinct()->orderBy('make')->pluck('make')->each(function ($makeName) use ($sitemap) {
+        $sitemap->add(
+            Url::create(route('motorcycles.make', \Illuminate\Support\Str::slug($makeName)))
+                ->setPriority(0.85)
+                ->setChangeFrequency('daily')
+        );
+    });
+
     Motorcycle::all()->each(function (Motorcycle $m) use ($sitemap) {
         $sitemap->add(
             Url::create(route('motorcycles.show', $m))
@@ -73,5 +81,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/about', [AboutController::class, 'edit'])->name('about.edit');
     Route::put('/about', [AboutController::class, 'update'])->name('about.update');
 });
+
+// Make landing pages — must be last to avoid shadowing static routes
+Route::get('/{make}', [PublicMotorcycleController::class, 'make'])
+    ->name('motorcycles.make')
+    ->where('make', '[a-z0-9][a-z0-9-]*');
 
 require __DIR__.'/auth.php';

@@ -1,9 +1,15 @@
-<x-app-layout>
-    @php
-        $primaryImage = $motorcycle->images->where('is_primary', true)->first() ?? $motorcycle->images->first();
-        $canonical = route('motorcycles.show', $motorcycle);
-    @endphp
+@php
+    $primaryImage = $motorcycle->images->where('is_primary', true)->first() ?? $motorcycle->images->first();
+    $canonical = route('motorcycles.show', $motorcycle);
+@endphp
 
+<x-app-layout
+    :title="$motorcycle->seo_title"
+    :description="$motorcycle->seo_description"
+    :canonical="$canonical"
+    :image="$primaryImage?->url"
+    type="product"
+>
     @push('head')
     @php
         $jsonLd = array_filter([

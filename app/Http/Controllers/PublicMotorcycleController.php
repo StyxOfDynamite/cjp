@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Motorcycle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class PublicMotorcycleController extends Controller
 {
@@ -42,5 +43,28 @@ class PublicMotorcycleController extends Controller
         $motorcycle->load('images');
 
         return view('motorcycles.show', compact('motorcycle'));
+    }
+
+    public function make(string $make)
+    {
+        $makes = Motorcycle::distinct()->orderBy('make')->pluck('make');
+        $makeMap = $makes->keyBy(fn ($m) => Str::slug($m));
+
+        abort_unless($makeMap->has($make), 404);
+
+        $makeName = $makeMap[$make];
+
+        $motorcycles = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
+            ->where('make', $makeName)
+            ->orderByDesc('is_featured')
+            ->orderByDesc('stock_quantity')
+            ->orderBy('year', 'desc')
+            ->paginate(12)
+            ->withQueryString();
+
+        $inStockCount = Motorcycle::where('make', $makeName)->where('stock_quantity', '>', 0)->count();
+        $priceFrom = Motorcycle::where('make', $makeName)->where('stock_quantity', '>', 0)->min('price');
+
+        return view('motorcycles.make', compact('motorcycles', 'makeName', 'make', 'inStockCount', 'priceFrom'));
     }
 }

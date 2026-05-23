@@ -28,6 +28,7 @@ class PublicMotorcycleController extends Controller
 
         $motorcycles = Motorcycle::with(['images' => fn ($q) => $q->where('is_primary', true)])
             ->filter($filters)
+            ->orderByDesc('stock_quantity')
             ->orderByDesc('is_featured')
             ->orderBy('make')
             ->paginate(12)

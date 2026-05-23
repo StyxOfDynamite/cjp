@@ -1,17 +1,18 @@
 <x-app-layout>
     @php
         $primaryImage = $motorcycle->images->where('is_primary', true)->first() ?? $motorcycle->images->first();
-        $title = $motorcycle->seo_title;
-        $description = $motorcycle->seo_description;
         $canonical = route('motorcycles.show', $motorcycle);
-        $image = $primaryImage?->url;
-        $type = 'product';
+    @endphp
+
+    @push('head')
+    @php
         $jsonLd = array_filter([
             '@context' => 'https://schema.org',
             '@type' => 'Motorcycle',
             'name' => "{$motorcycle->year} {$motorcycle->make} {$motorcycle->model}",
             'description' => $motorcycle->description ?: null,
             'image' => $motorcycle->images->pluck('url')->values()->all() ?: null,
+            'video' => $motorcycle->video_path ? $motorcycle->video_url : null,
             'brand' => ['@type' => 'Brand', 'name' => $motorcycle->make],
             'color' => $motorcycle->color ?: null,
             'vehicleModelDate' => $motorcycle->year ? (string) $motorcycle->year : null,
@@ -41,6 +42,8 @@
             ],
         ]);
     @endphp
+    <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}</script>
+    @endpush
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 

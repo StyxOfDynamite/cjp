@@ -9,7 +9,7 @@ return [
     'address_region' => env('SEO_ADDRESS_REGION', 'NSW'),
     'address_postcode' => env('SEO_ADDRESS_POSTCODE', '2000'),
     'address_country' => env('SEO_ADDRESS_COUNTRY', 'AU'),
-    'default_description' => env('SEO_DEFAULT_DESCRIPTION', 'Quality motorcycles for sale. Browse our full range of new and used bikes.'),
+    'default_description' => "Discover pristine, low-mileage classic motorcycles in Dorset. Handpicked vintage bikes, fully inspected and ready for the road. View our latest stock today.",
     'opening_hours' => [env('SEO_OPENING_HOURS', 'Mo-Fr 09:00-15:00')],
     'opening_hours_display' => ['Monday – Friday: 9am – 3pm', 'Saturday – Sunday: Closed'],
 

@@ -82,9 +82,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('/about', [AboutController::class, 'update'])->name('about.update');
 });
 
+require __DIR__.'/auth.php';
+
 // Make landing pages — must be last to avoid shadowing static routes
 Route::get('/{make}', [PublicMotorcycleController::class, 'make'])
     ->name('motorcycles.make')
     ->where('make', '[a-z0-9][a-z0-9-]*');
 
-require __DIR__.'/auth.php';
+

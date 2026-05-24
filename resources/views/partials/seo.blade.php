@@ -1,6 +1,7 @@
 {{-- SEO partial: pass $title, $description, $canonical, $image, $imageAlt, $type, $jsonLd --}}
 @php
-    $seoTitle       = isset($title) ? $title . ' | ' . config('seo.business_name') : config('seo.business_name');
+    $seoTagline     = config('seo.business_tagline') . ' | ' . config('seo.business_name');
+    $seoTitle       = isset($title) ? $title . ' | ' . $seoTagline : $seoTagline;
     $seoDescription = $description ?? config('seo.default_description', '');
     $seoCanonical   = $canonical ?? url()->current();
     $seoImage       = $image ?? config('seo.logo_url');

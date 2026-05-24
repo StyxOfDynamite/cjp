@@ -2,6 +2,7 @@
 
 return [
     'business_name' => env('SEO_BUSINESS_NAME', 'CJP Motorcycles'),
+    'business_tagline' => "Buy Low Mileage Classic & Vintage Motorcycles in Dorset",
     'phone' => env('SEO_PHONE', '+61 2 0000 0000'),
     'email' => env('SEO_EMAIL', 'info@cjpmotorcycles.com.au'),
     'address_street' => env('SEO_ADDRESS_STREET', '1 Example Street'),

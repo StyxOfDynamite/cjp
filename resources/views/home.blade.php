@@ -1,11 +1,9 @@
-<x-app-layout>
-    @php
-        $title = config('seo.business_name') . ' — Motorcycles For Sale';
-        $description = config('seo.default_description');
-        $canonical = route('home');
-    @endphp
+@php $firstImage = $bikes->first()?->images->first(); @endphp
 
-    @php $firstImage = $bikes->first()?->images->first(); @endphp
+<x-app-layout
+    :canonical="route('home')"
+    :description="config('seo.default_description')"
+>
     @if($firstImage?->has_thumbnail)
         @push('head')
             <link rel="preload" as="image" href="{{ $firstImage->url }}">
@@ -120,11 +118,11 @@
     <div class="border-t border-white/10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
-                <a href="{{ route('motorcycles.index', ['in_stock' => 1]) }}"
-                   class="text-white font-bold text-xl tracking-tight hover:text-amber-400 transition-colors">
-                    {{ $inStockCount }} bikes currently in stock
-                </a>
-                <p class="text-zinc-400 text-sm mt-1">New stock added regularly — check back often.</p>
+                <h1 class="text-white font-bold text-4xl tracking-tight">Quality Motorcycles For Sale</h1>
+                <p class="text-zinc-400 text-sm mt-1">
+                    <a href="{{ route('motorcycles.index', ['in_stock' => 1]) }}" class="hover:text-amber-400 transition-colors">{{ $inStockCount }} bikes currently in stock</a>
+                    &mdash; new stock added regularly.
+                </p>
             </div>
             <a href="{{ route('motorcycles.index', ['in_stock' => 1]) }}"
                class="bg-amber-500 text-black font-semibold px-8 py-3 hover:bg-amber-400 transition-colors uppercase tracking-wide text-sm whitespace-nowrap">
